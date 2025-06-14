@@ -1,0 +1,6 @@
+cd healthcare_diet_app 
+cd frontend
+cd healthify 
+cd backend
+npm run dev
+python manage.py runserver
