@@ -2,6 +2,10 @@
 import { useState } from "react";
 import Header from "./components/header";
 import Footer from "./components/footer";
+import Food from "./components/food_log";
+import History from "./components/history_log";
+import Symptoms from "./components/symptoms_log";
+import Recommendations from "./components/recommendations";
 
 
 export default function Home() {
@@ -10,26 +14,10 @@ export default function Home() {
 
   // Content for each tab
   const tabContent = {
-    food: (
-      <div className="w-full bg-gradient-to-br from-blue-900 to-gray-900 rounded-2xl shadow-xl p-8 my-8 text-white text-center text-lg">
-        <strong>Food Logging:</strong> Have to add another food  logging component here.
-      </div>
-    ),
-    history: (
-      <div className="w-full bg-gradient-to-br from-purple-900 to-gray-900 rounded-2xl shadow-xl p-8 my-8 text-white text-center text-lg">
-        <strong>Food History Log:</strong> Food History component renders
-      </div>
-    ),
-    symptoms: (
-      <div className="w-full bg-gradient-to-br from-pink-900 to-gray-900 rounded-2xl shadow-xl p-8 my-8 text-white text-center text-lg">
-        <strong>Symptoms Log:</strong> Symptoms component renders here.
-      </div>
-    ),
-    recommendations: (
-      <div className="w-full bg-gradient-to-br from-green-900 to-gray-900 rounded-2xl shadow-xl p-8 my-8 text-white text-center text-lg">
-        <strong>Recommendations:</strong> Personalized dietary advice will be shown here.
-      </div>
-    ),
+    food: (<Food/>),
+    history: (<History/>),
+    symptoms: (<Symptoms/>),
+    recommendations: (<Recommendations/>),
   };
 
   return (
