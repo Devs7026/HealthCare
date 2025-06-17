@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
+import '../css/food_log.css';
 
 const Food = () => {
   const [form, setForm] = useState({
@@ -14,118 +15,88 @@ const Food = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission logic here
     alert('Food logged!');
     setForm({ food: '', quantity: '', meal: '', date: '' });
   };
 
   return (
-    <div style={{
-      maxWidth: '400px',
-      margin: '40px auto',
-      padding: '2rem',
-      borderRadius: '16px',
-      background: '#fff',
-      boxShadow: '0 4px 24px rgba(0,0,0,0.07)',
-      fontFamily: 'Inter, sans-serif'
-    }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', color: '#333' }}>FOOD LOG</h1>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '1.2rem' }}>
-          <label style={{ display: 'block', marginBottom: '.5rem', color: '#444' }}>Food Item</label>
-          <input
-            type="text"
-            name="food"
-            value={form.food}
-            onChange={handleChange}
-            placeholder="e.g. Apple"
-            required
-            style={{
-              width: '100%',
-              padding: '.7rem',
-              borderRadius: '8px',
-              border: '1px solid #e0e0e0',
-              fontSize: '1rem'
-            }}
-          />
+    <div
+      className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-2 sm:px-4 md:px-8 py-8"
+      style={{
+        backgroundImage: "url('./Board.jpeg')",
+      }}
+    >
+      {/* Gradient border wrapper */}
+      <div className="p-1 bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 rounded-2xl shadow-2xl w-full max-w-lg">
+        {/* Card */}
+        <div className="w-full bg-white rounded-2xl p-6 sm:p-8 shadow-xl font-sans">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-center mb-6 sm:mb-8 text-gray-800 tracking-tight">FOOD LOG</h1>
+          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+            {/* Food Item */}
+            <div>
+              <label className="form-tags block mb-1 sm:mb-2 text-base sm:text-md font-semibold text-gray-700">Food Item</label>
+              <input
+                type="text"
+                name="food"
+                value={form.food}
+                onChange={handleChange}
+                placeholder="e.g. Apple"
+                required
+                className="w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
+              />
+            </div>
+            {/* Quantity */}
+            <div>
+              <label className="form-tags block mb-1 sm:mb-2 text-base sm:text-md font-semibold text-gray-700">Quantity</label>
+              <input
+                type="text"
+                name="quantity"
+                value={form.quantity}
+                onChange={handleChange}
+                placeholder="e.g. 2 pieces, 100g"
+                required
+                className="w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
+              />
+            </div>
+            {/* Meal */}
+            <div>
+              <label className="form-tags block mb-1 sm:mb-2 text-base sm:text-md font-semibold text-gray-700">Meal</label>
+              <select
+                name="meal"
+                value={form.meal}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
+              >
+                <option value="">Select meal</option>
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
+              </select>
+            </div>
+            {/* Date */}
+            <div>
+              <label className="form-tags block mb-1 sm:mb-2 text-base sm:text-md font-semibold text-gray-700">Date</label>
+              <input
+                type="date"
+                name="date"
+                value={form.date}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
+              />
+            </div>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full py-2 sm:py-3 mt-2 rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-lg shadow-lg hover:scale-105 transition-transform duration-150"
+            >
+              Log Food
+            </button>
+          </form>
         </div>
-        <div style={{ marginBottom: '1.2rem' }}>
-          <label style={{ display: 'block', marginBottom: '.5rem', color: '#444' }}>Quantity</label>
-          <input
-            type="text"
-            name="quantity"
-            value={form.quantity}
-            onChange={handleChange}
-            placeholder="e.g. 2 pieces, 100g"
-            required
-            style={{
-              width: '100%',
-              padding: '.7rem',
-              borderRadius: '8px',
-              border: '1px solid #e0e0e0',
-              fontSize: '1rem'
-            }}
-          />
-        </div>
-        <div style={{ marginBottom: '1.2rem' }}>
-          <label style={{ display: 'block', marginBottom: '.5rem', color: '#444' }}>Meal</label>
-          <select
-            name="meal"
-            value={form.meal}
-            onChange={handleChange}
-            required
-            style={{
-              width: '100%',
-              padding: '.7rem',
-              borderRadius: '8px',
-              border: '1px solid #e0e0e0',
-              fontSize: '1rem',
-              background: '#f9f9f9'
-            }}
-          >
-            <option value="">Select meal</option>
-            <option value="breakfast">Breakfast</option>
-            <option value="lunch">Lunch</option>
-            <option value="dinner">Dinner</option>
-            <option value="snack">Snack</option>
-          </select>
-        </div>
-        <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ display: 'block', marginBottom: '.5rem', color: '#444' }}>Date</label>
-          <input
-            type="date"
-            name="date"
-            value={form.date}
-            onChange={handleChange}
-            required
-            style={{
-              width: '100%',
-              padding: '.7rem',
-              borderRadius: '8px',
-              border: '1px solid #e0e0e0',
-              fontSize: '1rem'
-            }}
-          />
-        </div>
-        <button
-          type="submit"
-          style={{
-            width: '100%',
-            padding: '.9rem',
-            borderRadius: '8px',
-            border: 'none',
-            background: 'linear-gradient(90deg, #7f53ac 0%, #647dee 100%)',
-            color: '#fff',
-            fontWeight: 'bold',
-            fontSize: '1.1rem',
-            letterSpacing: '1px',
-            cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(100, 125, 222, 0.15)'
-          }}
-        >
-          Log Food
-        </button>
-      </form>
+      </div>
     </div>
   );
 };
