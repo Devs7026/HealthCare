@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import '../css/food_log.css';
+import { SignatureOutlined } from '@ant-design/icons';
 
 const Food = () => {
   const [form, setForm] = useState({
@@ -21,16 +22,17 @@ const Food = () => {
 
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-2 sm:px-4 md:px-8 py-8"
+      className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-2 sm:px-4 md:px-8 py-8 mt-5 "
       style={{
         backgroundImage: "url('./Board.jpeg')",
+        borderRadius:'100px'
       }}
     >
       {/* Gradient border wrapper */}
       <div className="p-1 bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 rounded-2xl shadow-2xl w-full max-w-lg">
         {/* Card */}
         <div className="w-full bg-white rounded-2xl p-6 sm:p-8 shadow-xl font-sans">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-center mb-6 sm:mb-8 text-gray-800 tracking-tight">FOOD LOG</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-center mb-6 sm:mb-8 text-gray-800 tracking-tight"><SignatureOutlined /> FOOD LOG</h1>
           <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
             {/* Food Item */}
             <div>
@@ -42,7 +44,7 @@ const Food = () => {
                 onChange={handleChange}
                 placeholder="e.g. Apple"
                 required
-                className="w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
+                className=" form-phlder w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
               />
             </div>
             {/* Quantity */}
@@ -55,7 +57,7 @@ const Food = () => {
                 onChange={handleChange}
                 placeholder="e.g. 2 pieces, 100g"
                 required
-                className="w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
+                className=" form-phlder w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
               />
             </div>
             {/* Meal */}
@@ -66,13 +68,13 @@ const Food = () => {
                 value={form.meal}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
+                className=" form-phlder w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
               >
-                <option value="">Select meal</option>
-                <option value="breakfast">Breakfast</option>
-                <option value="lunch">Lunch</option>
-                <option value="dinner">Dinner</option>
-                <option value="snack">Snack</option>
+                <option className='bg-gray-800 text-white' value="">Select meal</option>
+                <option className='bg-gray-700 text-white' value="breakfast">Breakfast</option>
+                <option className='bg-gray-600 text-white' value="lunch">Lunch</option>
+                <option className='bg-gray-500 text-white' value="dinner">Dinner</option>
+                <option className='bg-gray-400 text-white' value="snack">Snack</option>
               </select>
             </div>
             {/* Date */}
@@ -84,13 +86,13 @@ const Food = () => {
                 value={form.date}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
+                className=" form-phlder w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
               />
             </div>
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-2 sm:py-3 mt-2 rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-lg shadow-lg hover:scale-105 transition-transform duration-150"
+              className="w-full py-2 sm:py-3 mt-2 rounded-lg   bg-black text-white font-bold text-lg shadow-lg  hover:scale-104 transition-transform duration-150 hover:shadow-black transition-transform duration-150 "
             >
               Log Food
             </button>
