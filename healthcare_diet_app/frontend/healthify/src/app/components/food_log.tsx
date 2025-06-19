@@ -3,6 +3,8 @@ import axios from 'axios';
 import '../css/food_log.css';
 import { SignatureOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const Food = () => {
@@ -24,10 +26,10 @@ const Food = () => {
     setLoading(true);
     try {
       await axios.post('http://127.0.0.1:8000/api/foodlogs/', form);
-      alert('Food logged!');
+      toast.success('Food has been logged!');
       setForm({ food: '', quantity: '', meal: '', date: '' });
     } catch (error) {
-      alert('Failed to log food. Please try again.');
+      toast.error('Error logging food!');
       console.error(error);
     } finally {
       setLoading(false);
@@ -114,6 +116,7 @@ const Food = () => {
               {loading ? <span>Logging <Spin/></span> : 'Log Food'}
             </button>
           </form>
+          <ToastContainer />
         </div>
       </div>
     </div>

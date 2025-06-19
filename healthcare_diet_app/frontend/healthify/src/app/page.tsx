@@ -6,6 +6,9 @@ import Food from "./components/food_log";
 import History from "./components/history_log";
 import Symptoms from "./components/symptoms_log";
 import Recommendations from "./components/recommendations";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 export default function Home() {

@@ -10,3 +10,8 @@ cd backend
 venv/Scripts/activate
 python manage.py runserver
 
+
+RUN MYSQL ON TERMINAL:
+mysql -u root -p
+USE healthcare_db;
+
