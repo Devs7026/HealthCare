@@ -23,8 +23,7 @@ const Food = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Replace the URL below with your actual Django API endpoint
-      await axios.post('http://localhost:8000/api/foodlogs/', form);
+      await axios.post('http://127.0.0.1:8000/api/foodlogs/', form);
       alert('Food logged!');
       setForm({ food: '', quantity: '', meal: '', date: '' });
     } catch (error) {
