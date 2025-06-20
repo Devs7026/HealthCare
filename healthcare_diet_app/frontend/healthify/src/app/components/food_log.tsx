@@ -29,7 +29,7 @@ const Food = () => {
       toast.success('Food has been logged!');
       setForm({ food: '', quantity: '', meal: '', date: '' });
     } catch (error) {
-      toast.error('Error logging food!');
+      toast.error('Error logging food! Please try again');
       console.error(error);
     } finally {
       setLoading(false);
