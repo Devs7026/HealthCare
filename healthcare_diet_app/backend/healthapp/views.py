@@ -6,7 +6,7 @@ from .models import FoodLog
 from .serializers import FoodLogSerializer
 from django.http import JsonResponse
 
-class FoodLogCreateView(generics.CreateAPIView):
+class FoodLogCreateView(generics.ListCreateAPIView):
     queryset = FoodLog.objects.all()
     serializer_class = FoodLogSerializer
 

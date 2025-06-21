@@ -1,0 +1,115 @@
+/* History Log Table Theme Styles */
+
+.history-log-container {
+  background: linear-gradient(90deg, #ec4899 0%, #fde68a 50%, #3b82f6 100%);
+  border-radius: 48px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.12);
+  padding: 2rem;
+  max-width: 1100px;
+  margin: 1.25rem auto 0 auto; /* mt-5, center horizontally */
+}
+
+.history-log-card {
+  background: #fff;
+  border-radius: 32px;
+  box-shadow: 0 4px 24px rgba(44, 62, 80, 0.10);
+  padding: 2rem 2.5rem;
+}
+
+.history-log-heading {
+  color: #1e293b;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  background: black;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.history-log-filterbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.history-log-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #f9fafb;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(59, 130, 246, 0.07);
+}
+
+.history-log-table th {
+  background: #e0e7ff;
+  color: #1e293b;
+  font-weight: 700;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 2px solid #a5b4fc;
+}
+
+.history-log-table td {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: #334155;
+}
+
+.history-log-table tr:last-child td {
+  border-bottom: none;
+}
+
+.history-log-date {
+  color: #2563eb;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.history-log-action-btns .ant-btn-primary {
+  background: #fff;
+  color: #22c55e;
+  border: 1.5px solid #22c55e;
+  box-shadow: none;
+  font-weight: 600;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.history-log-action-btns .ant-btn-dangerous {
+  background: #fff;
+  color: #ef4444;
+  border: 1.5px solid #ef4444;
+  box-shadow: none;
+  font-weight: 600;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.history-log-action-btns .ant-btn-primary:hover {
+  background: #f0fdf4;
+  border-color: #16a34a;
+  color: #16a34a;
+  box-shadow: 0 2px 8px rgba(34,197,94,0.08);
+}
+
+.history-log-action-btns .ant-btn-dangerous:hover {
+  background: #fef2f2;
+  border-color: #b91c1c;
+  color: #b91c1c;
+  box-shadow: 0 2px 8px rgba(239,68,68,0.08);
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .history-log-card {
+    padding: 1rem 0.5rem;
+  }
+  .history-log-table th, .history-log-table td {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.95rem;
+  }
+} 
