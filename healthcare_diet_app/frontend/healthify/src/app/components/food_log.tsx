@@ -6,9 +6,15 @@ import { Spin } from 'antd';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+interface FoodForm {
+  food: string;
+  quantity: string;
+  meal: string;
+  date: string;
+}
 
-const Food = () => {
-  const [form, setForm] = useState({
+const Food: React.FC = () => {
+  const [form, setForm] = useState<FoodForm>({
     food: '',
     quantity: '',
     meal: '',
@@ -17,7 +23,9 @@ const Food = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -54,7 +62,9 @@ const Food = () => {
           <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
             {/* Food Item */}
             <div>
-              <label className="form-tags block mb-1 sm:mb-2 text-base sm:text-md font-semibold text-gray-700">Food Item</label>
+              <label className="form-tags block mb-1 sm:mb-2 text-base sm:text-md font-semibold text-gray-700">
+                Food Item
+              </label>
               <input
                 type="text"
                 name="food"
@@ -67,7 +77,9 @@ const Food = () => {
             </div>
             {/* Quantity */}
             <div>
-              <label className="form-tags block mb-1 sm:mb-2 text-base sm:text-md font-semibold text-gray-700">Quantity</label>
+              <label className="form-tags block mb-1 sm:mb-2 text-base sm:text-md font-semibold text-gray-700">
+                Quantity
+              </label>
               <input
                 type="text"
                 name="quantity"
@@ -80,7 +92,9 @@ const Food = () => {
             </div>
             {/* Meal */}
             <div>
-              <label className="form-tags block mb-1 sm:mb-2 text-base sm:text-md font-semibold text-gray-700">Meal</label>
+              <label className="form-tags block mb-1 sm:mb-2 text-base sm:text-md font-semibold text-gray-700">
+                Meal
+              </label>
               <select
                 name="meal"
                 value={form.meal}
@@ -88,16 +102,18 @@ const Food = () => {
                 required
                 className="form-phlder w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
               >
-                <option className='bg-gray-800 text-white' value="">Select meal</option>
-                <option className='bg-gray-700 text-white' value="breakfast">Breakfast</option>
-                <option className='bg-gray-600 text-white' value="lunch">Lunch</option>
-                <option className='bg-gray-500 text-white' value="dinner">Dinner</option>
-                <option className='bg-gray-400 text-white' value="snack">Snack</option>
+                <option value="">Select meal</option>
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
               </select>
             </div>
             {/* Date */}
             <div>
-              <label className="form-tags block mb-1 sm:mb-2 text-base sm:text-md font-semibold text-gray-700">Date</label>
+              <label className="form-tags block mb-1 sm:mb-2 text-base sm:text-md font-semibold text-gray-700">
+                Date
+              </label>
               <input
                 type="date"
                 name="date"
@@ -110,10 +126,16 @@ const Food = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-2 sm:py-3 mt-2 rounded-lg bg-black text-white font-bold text-lg shadow-lg hover:scale-104 transition-transform duration-150 hover:shadow-black transition-transform duration-150"
+              className="w-full py-2 sm:py-3 mt-2 rounded-lg bg-black text-white font-bold text-lg shadow-lg hover:scale-104 hover:shadow-black transition-transform duration-150"
               disabled={loading}
             >
-              {loading ? <span>Logging <Spin/></span> : 'Log Food'}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  Logging <Spin size="small" />
+                </span>
+              ) : (
+                'Log Food'
+              )}
             </button>
           </form>
           <ToastContainer />

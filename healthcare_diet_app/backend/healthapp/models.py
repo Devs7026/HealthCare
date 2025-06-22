@@ -8,3 +8,6 @@ class FoodLog(models.Model):
     meal = models.CharField(max_length=50)
     date = models.DateField(default=now)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.food} ({self.meal}) on {self.date}"
