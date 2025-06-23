@@ -19,23 +19,26 @@
   .responsive-table td {
     padding: 12px 16px;
     text-align: left;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 2px solid #e5e7eb;
     font-size: 1rem;
+    
   }
   
   .responsive-table th {
-    background: #f8fafc;
-    font-weight: 600;
+    background: #e5e7eb;
+    font-weight: 700;
     color: #374151;
     letter-spacing: 0.02em;
   }
   
   .responsive-table tr:last-child td {
     border-bottom: none;
+
   }
   
   .responsive-table td {
     color: #444;
+    
   }
   
   .action-btn {
@@ -188,4 +191,6 @@
     }
   }
   
+  
+
   

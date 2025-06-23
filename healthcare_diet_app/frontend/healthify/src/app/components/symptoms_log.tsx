@@ -149,12 +149,12 @@ const SymptomsLog: React.FC = () => {
         borderRadius: '100px'
       }}
     >
-      <div className="p-1 bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 rounded-2xl shadow-2xl w-full max-w-3xl">
+      <div className="p-1 bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 rounded-2xl shadow-2xl w-full max-w-4xl">
         <div className="w-full bg-white rounded-2xl p-6 sm:p-8 shadow-xl font-sans">
           <h1 className="text-2xl sm:text-3xl font-extrabold text-center mb-6 sm:mb-8 text-gray-800 tracking-tight flex items-center justify-center gap-2">
             <SmileOutlined /> SYMPTOMS LOG
           </h1>
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-center mb-4">
             <button
               className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
               onClick={() => openModal()}
@@ -173,7 +173,7 @@ const SymptomsLog: React.FC = () => {
           ) : (
             <div className="table-wrapper">
               <table className="responsive-table">
-                <thead className="t_head ">
+                <thead>
                   <tr>
                     <th>Symptom</th>
                     <th>Severity</th>
