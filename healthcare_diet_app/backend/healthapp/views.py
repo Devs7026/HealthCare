@@ -1,6 +1,6 @@
 from rest_framework import generics
-from .models import FoodLog
-from .serializers import FoodLogSerializer
+from .models import FoodLog, SymptomLog
+from .serializers import FoodLogSerializer, SymptomLogSerializer
 from django.http import JsonResponse
 
 class FoodLogListCreateView(generics.ListCreateAPIView):
@@ -10,6 +10,14 @@ class FoodLogListCreateView(generics.ListCreateAPIView):
 class FoodLogRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = FoodLog.objects.all()
     serializer_class = FoodLogSerializer
+
+class SymptomLogListCreateView(generics.ListCreateAPIView):
+    queryset = SymptomLog.objects.all().order_by('-occurred_at', '-id')
+    serializer_class = SymptomLogSerializer
+
+class SymptomLogRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SymptomLog.objects.all()
+    serializer_class = SymptomLogSerializer
 
 def api_root(request):
     return JsonResponse({"message": "Welcome to the API root!"})
