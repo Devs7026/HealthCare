@@ -5,6 +5,7 @@ import { SmileOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-
 import { Spin } from 'antd';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { saveAs } from 'file-saver';
 
 interface SymptomForm {
   symptom: string;
@@ -141,6 +142,26 @@ const SymptomsLog: React.FC = () => {
     }
   };
 
+  // Helper to convert symptoms to CSV and trigger download
+  const downloadCSV = () => {
+    const headers = ['Symptom', 'Severity', 'Notes', 'Occurred At', 'Food Log'];
+    const rows = symptoms.map(symp => [
+      symp.symptom,
+      symp.severity,
+      symp.notes,
+      symp.occurred_at.replace('T', ' ').slice(0, 16),
+      (() => {
+        const food = foodLogs.find(f => f.id === symp.food_log);
+        return food ? `${food.food} (${food.meal} on ${food.date})` : symp.food_log;
+      })()
+    ]);
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(field => '"' + String(field).replace(/"/g, '""') + '"').join(','))
+      .join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'symptoms_log.csv');
+  };
+
   return (
     <div
       className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-2 sm:px-4 md:px-8 py-8 mt-5"
@@ -155,6 +176,14 @@ const SymptomsLog: React.FC = () => {
             <SmileOutlined /> SYMPTOMS LOG
           </h1>
           <div className="flex justify-center mb-4">
+            <button
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition mr-2"
+              onClick={downloadCSV}
+              type="button"
+              style={{ marginRight: 8 }}
+            >
+              Download CSV
+            </button>
             <button
               className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
               onClick={() => openModal()}

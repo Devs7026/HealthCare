@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../css/history_log.css';
 import { HistoryOutlined } from '@ant-design/icons';
+import { saveAs } from 'file-saver';
 
 // Food log type definition
 interface FoodLog {
@@ -91,6 +92,17 @@ const History: React.FC = () => {
     }
   };
 
+  // Helper to convert array to CSV and trigger download
+  const downloadCSV = () => {
+    const headers = ['Food Item', 'Quantity', 'Meal', 'Date'];
+    const rows = filteredLogs.map(log => [log.food, log.quantity, log.meal, log.date]);
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(field => '"' + String(field).replace(/"/g, '""') + '"').join(','))
+      .join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'food_log_history.csv');
+  };
+
   const logsByDate = groupByDate(filteredLogs);
   const sortedDates = Object.keys(logsByDate).sort((a, b) => b.localeCompare(a));
 
@@ -112,6 +124,14 @@ const History: React.FC = () => {
           </h1>
           {/* Filter Bar */}
           <div className="history-log-filterbar">
+            <button
+              className="px-4 py-2 rounded bg-green-600 text-white font-semibold hover:bg-green-700 transition mr-2"
+              onClick={downloadCSV}
+              type="button"
+              style={{ marginRight: 8 }}
+            >
+              Download CSV
+            </button>
             <input
               type="date"
               value={filterDate}
