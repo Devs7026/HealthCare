@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Header from "./components/header";
 import Footer from "./components/footer";
 import Food from "./components/food_log";
@@ -7,98 +7,110 @@ import History from "./components/history_log";
 import Symptoms from "./components/symptoms_log";
 import Recommendations from "./components/recommendations";
 import About from "./components/About";
+import Dashboard from "./components/DashBoard";
+import Log_data from "./components/Log";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// You can use any dashboard icon, here is a simple SVG for demonstration
+const DashboardIcon = () => (
+  <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
+    <rect x="3" y="3" width="7" height="7" rx="2" fill="currentColor"/>
+    <rect x="14" y="3" width="7" height="7" rx="2" fill="currentColor"/>
+    <rect x="14" y="14" width="7" height="7" rx="2" fill="currentColor"/>
+    <rect x="3" y="14" width="7" height="7" rx="2" fill="currentColor"/>
+  </svg>
+);
+
+const LogIcon = () => (
+  <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M4 4h16v2H4zm0 4h16v2H4zm0 4h10v2H4zm0 4h10v2H4z" />
+  </svg>
+);
+
 export default function Home() {
-  // Track which tab is open: "food", "history", "symptoms", "recommendations"
+  // Tab management
   const [activeTab, setActiveTab] = useState<"food" | "history" | "symptoms" | "recommendations" | null>(null);
-  // Track if About page is being shown
   const [showAbout, setShowAbout] = useState(false);
 
-  // Content for each tab
+  // Sidepanel state
+  const [sidePanelOpen, setSidePanelOpen] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
+  const [showLog, setShowLog] = useState(false);
+  const closeTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // Mouse movement handler
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (e.clientX <= 10) { // 10px from the left edge
+        setSidePanelOpen(true);
+        if (closeTimeout.current) clearTimeout(closeTimeout.current);
+      } else if (sidePanelOpen) {
+        // Start a timer to close if mouse leaves panel
+        if (closeTimeout.current) clearTimeout(closeTimeout.current);
+        closeTimeout.current = setTimeout(() => setSidePanelOpen(false), 1000);
+      }
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (closeTimeout.current) clearTimeout(closeTimeout.current);
+    };
+  }, [sidePanelOpen]);
+
+  // Sidepanel content
+  const SidePanel = (
+    <div
+      className={`fixed top-0 left-0 h-full z-40 bg-gray-900 shadow-2xl transition-transform duration-300
+        ${sidePanelOpen ? 'translate-x-0' : '-translate-x-full'}
+        w-20 flex flex-col items-center pt-8`}
+      onMouseEnter={() => {
+        if (closeTimeout.current) clearTimeout(closeTimeout.current);
+        setSidePanelOpen(true);
+      }}
+      onMouseLeave={() => {
+        closeTimeout.current = setTimeout(() => setSidePanelOpen(false), 500);
+      }}
+    >
+      <button
+        className={`mb-6 p-3 rounded-full hover:bg-gray-700 transition-colors ${showDashboard ? "bg-blue-700" : ""}`}
+        title="Dashboard"
+        onClick={() => { setShowDashboard(true); setShowLog(false); }}
+      >
+        <DashboardIcon />
+      </button>
+      <button
+        className={`mb-6 p-3 rounded-full hover:bg-gray-700 transition-colors ${showLog ? "bg-green-700" : ""}`}
+        title="Log"
+        onClick={() => { setShowLog(true); setShowDashboard(false); }}
+      >
+        <LogIcon />
+      </button>
+      {/* Add more icons/buttons here if needed */}
+    </div>
+  );
+
+  // Tab content
   const tabContent = {
-    food: (<Food/>),
-    history: (<History/>),
-    symptoms: (<Symptoms/>),
-    recommendations: (<Recommendations/>),
+    food: (<Food />),
+    history: (<History />),
+    symptoms: (<Symptoms />),
+    recommendations: (<Recommendations />),
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-black relative">
+      {SidePanel}
       <Header />
-
-      {!showAbout ? (
-        <>
-          {/* Main Content: Four Big Buttons */}
-          <main className="flex-1 flex flex-col md:flex-row gap-6 md:gap-8 justify-center items-center md:items-start mt-8 md:mt-12 px-2 sm:px-4 max-w-6xl mx-auto w-full">
-            <button
-              onClick={() => setActiveTab("food")}
-              className={`w-full md:flex-1 bg-gradient-to-br from-blue-800 to-gray-800 hover:from-blue-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-blue-500 min-h-[180px] sm:min-h-[220px] ${
-                activeTab === "food" ? "ring-4 ring-blue-400" : ""
-              }`}
-            >
-              <span className="text-xl sm:text-2xl font-bold mb-2">Food Logging</span>
-              <span className="text-gray-300 text-base text-center">
-                Log your meals here.
-              </span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab("history")}
-              className={`w-full md:flex-1 bg-gradient-to-br from-purple-800 to-gray-800 hover:from-purple-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-purple-500 min-h-[180px] sm:min-h-[220px] ${
-                activeTab === "history" ? "ring-4 ring-purple-400" : ""
-              }`}
-            >
-              <span className="text-xl sm:text-2xl font-bold mb-2">Food History Log</span>
-              <span className="text-gray-300 text-base text-center">
-                How have you been eating lately?
-              </span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab("symptoms")}
-              className={`w-full md:flex-1 bg-gradient-to-br from-purple-800 to-gray-800 hover:from-purple-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-pink-500 min-h-[180px] sm:min-h-[220px] ${
-                activeTab === "symptoms" ? "ring-4 ring-pink-400" : ""
-              }`}
-            >
-              <span className="text-xl sm:text-2xl font-bold mb-2">Symptoms Log</span>
-              <span className="text-gray-300 text-base text-center">
-                Any new symptoms/flareups?
-              </span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab("recommendations")}
-              className={`w-full md:flex-1 bg-gradient-to-br from-green-800 to-gray-800 hover:from-green-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-green-500 min-h-[180px] sm:min-h-[220px] ${
-                activeTab === "recommendations" ? "ring-4 ring-green-400" : ""
-              }`}
-            >
-              <span className="text-xl sm:text-2xl font-bold mb-2">Recommendations</span>
-              <span className="text-gray-300 text-base text-center">
-                Personalized dietary advice will appear here.
-              </span>
-            </button>
-          </main>
-
-          {/* Render the selected tab's content below the buttons */}
-          <div className="flex flex-col items-center w-full max-w-5xl mx-auto">
-            {activeTab && tabContent[activeTab]}
-          </div>
-        </>
+      {showDashboard ? (
+        <div className="flex flex-col items-center w-full max-w-5xl mx-auto mt-12">
+          <Dashboard onClose={() => setShowDashboard(false)} />
+        </div>
+      ) : showLog ? (
+        <Log_data />
       ) : (
-        <About onBack={() => setShowAbout(false)} />
+        <About onBack={() => {}} />
       )}
-
-      {/* Floating Info Button (bottom right) */}
-      <button
-        onClick={() => setShowAbout((prev) => !prev)}
-        title="About"
-        className="fixed z-50 bottom-8 right-4 bg-gradient-to-br from-blue-600 to-blue-400 hover:from-blue-500 hover:to-blue-300 text-white rounded-full shadow-2xl w-14 h-14 flex items-center justify-center text-3xl font-bold transition-all focus:outline-none focus:ring-4 focus:ring-blue-300"
-      >
-        i
-      </button>
-
       <Footer />
     </div>
   );

@@ -6,12 +6,15 @@ npm run dev
 
 
 RUN BACKEND:
+cd healthcare_diet_app
 cd backend
 venv/Scripts/activate
 python manage.py runserver
+
+python manage.py makemigrations
+python manage.py migrate
 
 
 RUN MYSQL ON TERMINAL:
 mysql -u root -p
 USE healthcare_db;
-

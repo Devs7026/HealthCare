@@ -69,19 +69,6 @@ const About: React.FC<AboutProps> = ({ onBack }) => {
           <br />
           <span className="text-pink-300 font-semibold">Glow up your health journey!</span>
         </p>
-        <button
-          onClick={onBack}
-          className="
-            mt-4 px-7 py-3 rounded-full
-            bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500
-            text-white font-semibold text-lg shadow
-            hover:scale-105 hover:shadow-lg
-            transition duration-200
-            focus:outline-none focus:ring-2 focus:ring-blue-400/50
-          "
-        >
-          ← Back
-        </button>
       </div>
     </div>
   );
