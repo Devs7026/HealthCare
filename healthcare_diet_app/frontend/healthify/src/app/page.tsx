@@ -90,13 +90,6 @@ export default function Home() {
     </div>
   );
 
-  // Tab content
-  const tabContent = {
-    food: (<Food />),
-    history: (<History />),
-    symptoms: (<Symptoms />),
-    recommendations: (<Recommendations />),
-  };
 
   return (
     <div className="min-h-screen flex flex-col bg-black relative">
