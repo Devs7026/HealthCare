@@ -10,13 +10,33 @@ export default function Dashboard({ onClose }: DashboardProps) {
   const [uniqueFoodDays, setUniqueFoodDays] = useState<number>(0);
   const [symptomCount, setSymptomCount] = useState<number>(0);
   const [streak, setStreak] = useState<number>(0);
+  const [displayFoodDays, setDisplayFoodDays] = useState<number>(0);
+  const [displaySymptomCount, setDisplaySymptomCount] = useState<number>(0);
+  const [displayStreak, setDisplayStreak] = useState<number>(0);
+
+  // Animation function
+  const animateCount = (targetValue: number, setDisplayValue: (value: number) => void) => {
+    const duration = 1500; // 1.5 seconds
+    const steps = 60; // 60 steps for smooth animation
+    const increment = targetValue / steps;
+    let currentValue = 0;
+    
+    const timer = setInterval(() => {
+      currentValue += increment;
+      if (currentValue >= targetValue) {
+        currentValue = targetValue;
+        clearInterval(timer);
+      }
+      setDisplayValue(Math.floor(currentValue));
+    }, duration / steps);
+  };
 
   useEffect(() => {
     axios.get("http://127.0.0.1:8000/api/foodlogs/").then(res => {
       const today = new Date();
       const year = today.getFullYear();
-      const month = today.getMonth(); // 0-indexed
-      // Get all unique days in the current month
+      const month = today.getMonth(); 
+    
       const daysThisMonth = new Set(
         (res.data as any[])
           .map(log => log.date)
@@ -25,27 +45,67 @@ export default function Dashboard({ onClose }: DashboardProps) {
             return d.getFullYear() === year && d.getMonth() === month;
           })
       );
-      setUniqueFoodDays(daysThisMonth.size);
+      const foodDaysValue = daysThisMonth.size;
+      setUniqueFoodDays(foodDaysValue);
+      animateCount(foodDaysValue, setDisplayFoodDays);
 
-      // Calculate streak (consecutive days up to today with food logged)
+      // Fix streak calculation
       const allLoggedDays = Array.from(new Set((res.data as any[]).map(log => log.date)))
-        .map(dateStr => new Date(dateStr))
-        .sort((a, b) => b.getTime() - a.getTime()); // Descending
+        .map(dateStr => {
+          const date = new Date(dateStr);
+          // Normalize to start of day to avoid time comparison issues
+          return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        })
+        .sort((a, b) => b.getTime() - a.getTime()); // Sort in descending order
+
+      // Calculate current streak
       let streakCount = 0;
-      let current = new Date();
-      current.setHours(0,0,0,0);
-      for (let i = 0; i < allLoggedDays.length; i++) {
-        if (allLoggedDays[i].getTime() === current.getTime()) {
-          streakCount++;
-          current.setDate(current.getDate() - 1);
-        } else if (allLoggedDays[i].getTime() < current.getTime()) {
-          break;
+      const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      
+      // Check if today has a log
+      const hasTodayLog = allLoggedDays.some(logDate => 
+        logDate.getTime() === todayNormalized.getTime()
+      );
+      
+      if (hasTodayLog) {
+        streakCount = 1;
+        let currentDate = new Date(todayNormalized);
+        currentDate.setDate(currentDate.getDate() - 1); // Start checking from yesterday
+        
+        // Count consecutive days backwards
+        for (let i = 0; i < allLoggedDays.length; i++) {
+          const logDate = allLoggedDays[i];
+          if (logDate.getTime() === currentDate.getTime()) {
+            streakCount++;
+            currentDate.setDate(currentDate.getDate() - 1);
+          } else if (logDate.getTime() < currentDate.getTime()) {
+            // We've gone past the expected date, break
+            break;
+          }
+        }
+      } else {
+        // No log today, check if yesterday has a log and count backwards
+        let currentDate = new Date(todayNormalized);
+        currentDate.setDate(currentDate.getDate() - 1); // Start from yesterday
+        
+        for (let i = 0; i < allLoggedDays.length; i++) {
+          const logDate = allLoggedDays[i];
+          if (logDate.getTime() === currentDate.getTime()) {
+            streakCount++;
+            currentDate.setDate(currentDate.getDate() - 1);
+          } else if (logDate.getTime() < currentDate.getTime()) {
+            break;
+          }
         }
       }
+      
       setStreak(streakCount);
+      animateCount(streakCount, setDisplayStreak);
     });
     axios.get("http://127.0.0.1:8000/api/symptoms/").then(res => {
-      setSymptomCount((res.data as any[]).length);
+      const symptomValue = (res.data as any[]).length;
+      setSymptomCount(symptomValue);
+      animateCount(symptomValue, setDisplaySymptomCount);
     });
   }, []);
 
@@ -65,14 +125,13 @@ export default function Dashboard({ onClose }: DashboardProps) {
           <p className="text-gray-300 mb-6 text-base sm:text-lg">
             Welcome to your dashboard!
           </p>
-          {/* Example Responsive Content */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 flex flex-col items-start">
-              <span className="text-xl sm:text-2xl font-semibold text-pink-400 mb-1">🍽️ {uniqueFoodDays}</span>
+              <span className="text-xl sm:text-2xl font-semibold text-pink-400 mb-1">🍽️ {displayFoodDays}</span>
               <span className="text-gray-200 text-sm sm:text-base">Days Food Logged</span>
             </div>
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 flex flex-col items-start">
-              <span className="text-xl sm:text-2xl font-semibold text-yellow-300 mb-1">😷 {symptomCount}</span>
+              <span className="text-xl sm:text-2xl font-semibold text-yellow-300 mb-1">😷 {displaySymptomCount}</span>
               <span className="text-gray-200 text-sm sm:text-base">Symptoms Tracked</span>
             </div>
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 flex flex-col items-start">
@@ -80,7 +139,7 @@ export default function Dashboard({ onClose }: DashboardProps) {
               <span className="text-gray-200 text-sm sm:text-base">Recommendations</span>
             </div>
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 flex flex-col items-start">
-              <span className="text-xl sm:text-2xl font-semibold text-green-400 mb-1">📈 {streak}</span>
+              <span className="text-xl sm:text-2xl font-semibold text-green-400 mb-1">📈 {displayStreak}</span>
               <span className="text-gray-200 text-sm sm:text-base">Consistency (Streak)</span>
             </div>
           </div>

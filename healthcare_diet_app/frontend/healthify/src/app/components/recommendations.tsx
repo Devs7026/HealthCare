@@ -24,9 +24,7 @@ const Recommendations = () => {
               No recommendations yet.
             </div>
             {/* 
-              Later, map your recommendations here as a list of cards or rows.
-              Example:
-              <div className="...">Eat more fruits. - 17 June 2025</div>
+             Recommendations yet to be configured
             */}
           </div>
         </div>

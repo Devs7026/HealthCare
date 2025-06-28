@@ -92,7 +92,7 @@ const History: React.FC = () => {
     }
   };
 
-  // Helper to convert array to CSV and trigger download
+ 
   const downloadCSV = () => {
     const headers = ['Food Item', 'Quantity', 'Meal', 'Date'];
     const rows = filteredLogs.map(log => [log.food, log.quantity, log.meal, log.date]);

@@ -142,7 +142,7 @@ const SymptomsLog: React.FC = () => {
     }
   };
 
-  // Helper to convert symptoms to CSV and trigger download
+  
   const downloadCSV = () => {
     const headers = ['Symptom', 'Severity', 'Notes', 'Occurred At', 'Food Log'];
     const rows = symptoms.map(symp => [
