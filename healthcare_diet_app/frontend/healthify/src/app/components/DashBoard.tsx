@@ -14,10 +14,10 @@ export default function Dashboard({ onClose }: DashboardProps) {
   const [displaySymptomCount, setDisplaySymptomCount] = useState<number>(0);
   const [displayStreak, setDisplayStreak] = useState<number>(0);
 
-  // Animation function
+
   const animateCount = (targetValue: number, setDisplayValue: (value: number) => void) => {
-    const duration = 1500; // 1.5 seconds
-    const steps = 60; // 60 steps for smooth animation
+    const duration = 1500; 
+    const steps = 60; 
     const increment = targetValue / steps;
     let currentValue = 0;
     
@@ -49,20 +49,20 @@ export default function Dashboard({ onClose }: DashboardProps) {
       setUniqueFoodDays(foodDaysValue);
       animateCount(foodDaysValue, setDisplayFoodDays);
 
-      // Fix streak calculation
+  
       const allLoggedDays = Array.from(new Set((res.data as any[]).map(log => log.date)))
         .map(dateStr => {
           const date = new Date(dateStr);
-          // Normalize to start of day to avoid time comparison issues
+       
           return new Date(date.getFullYear(), date.getMonth(), date.getDate());
         })
-        .sort((a, b) => b.getTime() - a.getTime()); // Sort in descending order
+        .sort((a, b) => b.getTime() - a.getTime()); 
 
-      // Calculate current streak
+      
       let streakCount = 0;
       const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
       
-      // Check if today has a log
+     
       const hasTodayLog = allLoggedDays.some(logDate => 
         logDate.getTime() === todayNormalized.getTime()
       );
@@ -70,23 +70,23 @@ export default function Dashboard({ onClose }: DashboardProps) {
       if (hasTodayLog) {
         streakCount = 1;
         let currentDate = new Date(todayNormalized);
-        currentDate.setDate(currentDate.getDate() - 1); // Start checking from yesterday
+        currentDate.setDate(currentDate.getDate() - 1); 
         
-        // Count consecutive days backwards
+        
         for (let i = 0; i < allLoggedDays.length; i++) {
           const logDate = allLoggedDays[i];
           if (logDate.getTime() === currentDate.getTime()) {
             streakCount++;
             currentDate.setDate(currentDate.getDate() - 1);
           } else if (logDate.getTime() < currentDate.getTime()) {
-            // We've gone past the expected date, break
+          
             break;
           }
         }
       } else {
-        // No log today, check if yesterday has a log and count backwards
+        
         let currentDate = new Date(todayNormalized);
-        currentDate.setDate(currentDate.getDate() - 1); // Start from yesterday
+        currentDate.setDate(currentDate.getDate() - 1); 
         
         for (let i = 0; i < allLoggedDays.length; i++) {
           const logDate = allLoggedDays[i];
