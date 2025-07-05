@@ -191,63 +191,73 @@ const SymptomsLog: React.FC = () => {
               <PlusOutlined /> New Record
             </button>
           </div>
-          {loading ? (
-            <div className="w-full flex justify-center items-center py-12">
-              <Spin size="large" />
-            </div>
-          ) : symptoms.length === 0 ? (
-            <div className="w-full p-6 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 text-center text-gray-400 font-medium text-lg">
-              No symptoms recorded yet.
-            </div>
-          ) : (
-            <div className="table-wrapper">
-              <table className="responsive-table">
-                <thead>
-                  <tr>
-                    <th>Symptom</th>
-                    <th>Severity</th>
-                    <th>Notes</th>
-                    <th>Occurred At</th>
-                    <th>Food Log</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {symptoms.map((symp) => (
-                    <tr key={symp.id}>
-                      <td data-label="Symptom">{symp.symptom}</td>
-                      <td data-label="Severity">{symp.severity}</td>
-                      <td data-label="Notes">{symp.notes}</td>
-                      <td data-label="Occurred At">
-                        {symp.occurred_at.replace('T', ' ').slice(0, 16)}
-                      </td>
-                      <td data-label="Food Log">
-                        {foodLogs.find(f => f.id === symp.food_log)
-                          ? `${foodLogs.find(f => f.id === symp.food_log)?.food} (${foodLogs.find(f => f.id === symp.food_log)?.meal} on ${foodLogs.find(f => f.id === symp.food_log)?.date})`
-                          : symp.food_log}
-                      </td>
-                      <td data-label="Actions">
-                        <button
-                          className="action-btn edit"
-                          onClick={() => openModal(symp)}
-                          title="Edit"
-                        >
-                          <EditOutlined />
-                        </button>
-                        <button
-                          className="action-btn delete"
-                          onClick={() => handleDelete(symp.id)}
-                          title="Delete"
-                        >
-                          <DeleteOutlined />
-                        </button>
-                      </td>
+       
+          <div
+            style={{
+              maxHeight: '340px', 
+              overflowY: 'auto',
+              overscrollBehavior: 'contain',
+              paddingRight: '2px'
+            }}
+          >
+            {loading ? (
+              <div className="w-full flex justify-center items-center py-12">
+                <Spin size="large" />
+              </div>
+            ) : symptoms.length === 0 ? (
+              <div className="w-full p-6 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 text-center text-gray-400 font-medium text-lg">
+                No symptoms recorded yet.
+              </div>
+            ) : (
+              <div className="table-wrapper">
+                <table className="responsive-table">
+                  <thead>
+                    <tr>
+                      <th>Symptom</th>
+                      <th>Severity</th>
+                      <th>Notes</th>
+                      <th>Occurred At</th>
+                      <th>Food Log</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  </thead>
+                  <tbody>
+                    {symptoms.map((symp) => (
+                      <tr key={symp.id}>
+                        <td data-label="Symptom">{symp.symptom}</td>
+                        <td data-label="Severity">{symp.severity}</td>
+                        <td data-label="Notes">{symp.notes}</td>
+                        <td data-label="Occurred At">
+                          {symp.occurred_at.replace('T', ' ').slice(0, 16)}
+                        </td>
+                        <td data-label="Food Log">
+                          {foodLogs.find(f => f.id === symp.food_log)
+                            ? `${foodLogs.find(f => f.id === symp.food_log)?.food} (${foodLogs.find(f => f.id === symp.food_log)?.meal} on ${foodLogs.find(f => f.id === symp.food_log)?.date})`
+                            : symp.food_log}
+                        </td>
+                        <td data-label="Actions">
+                          <button
+                            className="action-btn edit"
+                            onClick={() => openModal(symp)}
+                            title="Edit"
+                          >
+                            <EditOutlined />
+                          </button>
+                          <button
+                            className="action-btn delete"
+                            onClick={() => handleDelete(symp.id)}
+                            title="Delete"
+                          >
+                            <DeleteOutlined />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       {/* Modal for Add/Edit */}
