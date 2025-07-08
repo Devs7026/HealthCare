@@ -11,6 +11,8 @@ import Dashboard from "./components/DashBoard";
 import Log_data from "./components/Log";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Chatbot from "./components/chatbot";
+import { RedditOutlined } from '@ant-design/icons';
 
 // You can use any dashboard icon, here is a simple SVG for demonstration
 const DashboardIcon = () => (
@@ -37,6 +39,7 @@ export default function Home() {
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const [showDashboard, setShowDashboard] = useState(false);
   const [showLog, setShowLog] = useState(false);
+  const [showChatbot, setShowChatbot] = useState(false);
   const closeTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Mouse movement handler
@@ -75,16 +78,23 @@ export default function Home() {
       <button
         className={`mb-6 p-3 rounded-full hover:bg-gray-700 transition-colors ${showDashboard ? "bg-blue-700" : ""}`}
         title="Dashboard"
-        onClick={() => { setShowDashboard(true); setShowLog(false); }}
+        onClick={() => { setShowDashboard(true); setShowLog(false); setShowChatbot(false); }}
       >
         <DashboardIcon />
       </button>
       <button
         className={`mb-6 p-3 rounded-full hover:bg-gray-700 transition-colors ${showLog ? "bg-green-700" : ""}`}
         title="Log"
-        onClick={() => { setShowLog(true); setShowDashboard(false); }}
+        onClick={() => { setShowLog(true); setShowDashboard(false); setShowChatbot(false); }}
       >
         <LogIcon />
+      </button>
+      <button
+        className={`mb-6 p-3 rounded-full hover:bg-gray-700 transition-colors ${showChatbot ? "bg-purple-700" : ""}`}
+        title="Chatbot"
+        onClick={() => { setShowChatbot(true); setShowDashboard(false); setShowLog(false); }}
+      >
+        <RedditOutlined style={{ fontSize: '32px' }} />
       </button>
       {/* Add more icons/buttons here if needed */}
     </div>
@@ -101,6 +111,8 @@ export default function Home() {
         </div>
       ) : showLog ? (
         <Log_data />
+      ) : showChatbot ? (
+        <Chatbot />
       ) : (
         <About onBack={() => {}} />
       )}
