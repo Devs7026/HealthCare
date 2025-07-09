@@ -1,3 +1,4 @@
 settings.py
 shortcuts.txt
 .env
+.env.local

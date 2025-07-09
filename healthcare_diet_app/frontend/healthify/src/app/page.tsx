@@ -13,6 +13,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Chatbot from "./components/chatbot";
 import { RedditOutlined } from '@ant-design/icons';
+import HealthLinks from "./components/health_links";
 
 // You can use any dashboard icon, here is a simple SVG for demonstration
 const DashboardIcon = () => (
@@ -30,6 +31,13 @@ const LogIcon = () => (
   </svg>
 );
 
+const LinksIcon = () => (
+  <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
+    <rect x="6" y="14" width="20" height="4" rx="2" fill="#1e293b" />
+    <rect x="14" y="6" width="4" height="20" rx="2" fill="#1e293b" />
+  </svg>
+);
+
 export default function Home() {
   // Tab management
   const [activeTab, setActiveTab] = useState<"food" | "history" | "symptoms" | "recommendations" | null>(null);
@@ -40,6 +48,7 @@ export default function Home() {
   const [showDashboard, setShowDashboard] = useState(false);
   const [showLog, setShowLog] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
+  const [showLinks, setShowLinks] = useState(false);
   const closeTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Mouse movement handler
@@ -96,6 +105,13 @@ export default function Home() {
       >
         <RedditOutlined style={{ fontSize: '32px' }} />
       </button>
+      <button
+        className={`mb-6 p-3 rounded-full hover:bg-gray-700 transition-colors ${showLinks ? "bg-yellow-700" : ""}`}
+        title="Healthcare Links"
+        onClick={() => { setShowLinks(true); setShowChatbot(false); setShowDashboard(false); setShowLog(false); }}
+      >
+        <LinksIcon />
+      </button>
       {/* Add more icons/buttons here if needed */}
     </div>
   );
@@ -113,6 +129,8 @@ export default function Home() {
         <Log_data />
       ) : showChatbot ? (
         <Chatbot />
+      ) : showLinks ? (
+        <HealthLinks />
       ) : (
         <About onBack={() => {}} />
       )}
