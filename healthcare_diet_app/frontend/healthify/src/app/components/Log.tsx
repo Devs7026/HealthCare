@@ -3,16 +3,18 @@ import Food from "./food_log";
 import History from "./history_log";
 import Symptoms from "./symptoms_log";
 import Recommendations from "./recommendations";
+import CalorieLookup from "./calorie_lookup";
 
 const tabContent = {
   food: (<Food />),
   history: (<History />),
   symptoms: (<Symptoms />),
   recommendations: (<Recommendations />),
+  calorie: (<CalorieLookup />),
 };
 
 export default function Log_data() {
-  const [activeTab, setActiveTab] = useState<"food" | "history" | "symptoms" | "recommendations" | null>(null);
+  const [activeTab, setActiveTab] = useState<"food" | "history" | "symptoms" | "recommendations" | "calorie" | null>(null);
   return (
     <>
       <main className="flex-1 flex flex-col md:flex-row gap-6 md:gap-8 justify-center items-center md:items-start mt-8 md:mt-12 px-2 sm:px-4 max-w-6xl mx-auto w-full">
@@ -31,25 +33,25 @@ export default function Log_data() {
         {/* Food History Log Button */}
         <button
           onClick={() => setActiveTab("history")}
-          className={`w-full md:flex-1 bg-gradient-to-br from-purple-800 to-gray-800 hover:from-purple-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-purple-500 min-h-[180px] sm:min-h-[220px] ${
-            activeTab === "history" ? "ring-4 ring-purple-400" : ""
+          className={`w-full md:flex-1 bg-gradient-to-br from-yellow-800 to-gray-800 hover:from-yellow-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-yellow-500 min-h-[180px] sm:min-h-[220px] ${
+            activeTab === "history" ? "ring-4 ring-yellow-400" : ""
           }`}
         >
-          <span className="text-xl sm:text-2xl font-bold mb-2">Food History Log</span>
+          <span className="text-xl sm:text-2xl font-bold mb-2">Food History</span>
           <span className="text-gray-300 text-base text-center">
-            How have you been eating lately?
+            View your food log history.
           </span>
         </button>
         {/* Symptoms Log Button */}
         <button
           onClick={() => setActiveTab("symptoms")}
-          className={`w-full md:flex-1 bg-gradient-to-br from-purple-800 to-gray-800 hover:from-purple-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-pink-500 min-h-[180px] sm:min-h-[220px] ${
-            activeTab === "symptoms" ? "ring-4 ring-pink-400" : ""
+          className={`w-full md:flex-1 bg-gradient-to-br from-red-800 to-gray-800 hover:from-red-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-red-500 min-h-[180px] sm:min-h-[220px] ${
+            activeTab === "symptoms" ? "ring-4 ring-red-400" : ""
           }`}
         >
           <span className="text-xl sm:text-2xl font-bold mb-2">Symptoms Log</span>
           <span className="text-gray-300 text-base text-center">
-            Any new symptoms/flareups?
+            Track your symptoms here.
           </span>
         </button>
         {/* Recommendations Button */}
@@ -62,6 +64,18 @@ export default function Log_data() {
           <span className="text-xl sm:text-2xl font-bold mb-2">Recommendations</span>
           <span className="text-gray-300 text-base text-center">
             Personalized dietary advice will appear here.
+          </span>
+        </button>
+        {/* Calorie Lookup Button */}
+        <button
+          onClick={() => setActiveTab("calorie")}
+          className={`w-full md:flex-1 bg-gradient-to-br from-purple-800 to-gray-800 hover:from-purple-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-purple-500 min-h-[180px] sm:min-h-[220px] ${
+            activeTab === "calorie" ? "ring-4 ring-purple-400" : ""
+          }`}
+        >
+          <span className="text-xl sm:text-2xl font-bold mb-2">Calorie Lookup</span>
+          <span className="text-gray-300 text-base text-center">
+            Find calories for any food item.
           </span>
         </button>
       </main>
