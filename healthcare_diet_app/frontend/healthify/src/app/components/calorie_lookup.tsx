@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Papa, { ParseResult } from 'papaparse';
 
-const CSV_PATH = '/food_calories.csv'; // User can replace this file in public/
+const CSV_PATH = '/food_calories.csv'; 
 
 const CalorieLookup: React.FC = () => {
   const [calorieData, setCalorieData] = useState<Record<string, number>>({});
@@ -48,8 +48,7 @@ const CalorieLookup: React.FC = () => {
       });
   }, []);
 
-  // Remove result, notFound, handleSubmit
-  // Add filteredItems for table
+
   const filteredItems = Object.entries(calorieData)
     .filter(([item]) => item.includes(food.trim().toLowerCase()))
     .sort((a, b) => a[0].localeCompare(b[0]));
