@@ -75,7 +75,7 @@ const CaloriesTab: React.FC = () => {
   useEffect(() => {
     let total = 0;
     todayFoodLogs.forEach(log => {
-      const calories = getCaloriesForFood(log.food);
+      const calories = getCaloriesForFood(log.food) * 6; 
       if (calories > 0) {
        
         const quantity = log.quantity.toLowerCase();
@@ -86,8 +86,8 @@ const CaloriesTab: React.FC = () => {
         else if (quantity.includes('3') || quantity.includes('three')) multiplier = 3;
         else if (quantity.includes('4') || quantity.includes('four')) multiplier = 4;
         else if (quantity.includes('5') || quantity.includes('five')) multiplier = 5;
-        else if (quantity.includes('half') || quantity.includes('0.5')) multiplier = 0.5;
-        else if (quantity.includes('quarter') || quantity.includes('0.25')) multiplier = 0.25;
+        else if (quantity.includes('1/2') || quantity.includes('0.5')) multiplier = 0.5;
+        else if (quantity.includes('1/4') || quantity.includes('0.25')) multiplier = 0.25;
         
         total += calories * multiplier;
       }
@@ -174,7 +174,7 @@ const CaloriesTab: React.FC = () => {
             <div className="space-y-4">
               <h2 className="text-xl font-semibold text-gray-700 mb-4">Today's Food Log</h2>
               {todayFoodLogs.map((log) => {
-                const calories = getCaloriesForFood(log.food);
+                const calories = getCaloriesForFood(log.food) * 6; 
                 return (
                   <div key={log.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                     <div className="flex justify-between items-start">
