@@ -1,20 +1,93 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Food from "./food_log";
 import History from "./history_log";
 import Symptoms from "./symptoms_log";
 import Recommendations from "./recommendations";
 import CalorieLookup from "./calorie_lookup";
 
-const tabContent = {
-  food: (<Food />),
-  history: (<History />),
-  symptoms: (<Symptoms />),
-  recommendations: (<Recommendations />),
-  calorie: (<CalorieLookup />),
-};
+interface FoodLog {
+  id: number;
+  food: string;
+  quantity: string;
+  meal: string;
+  date: string;
+}
+
+interface FoodCalories {
+  [key: string]: number;
+}
 
 export default function Log_data() {
   const [activeTab, setActiveTab] = useState<"food" | "history" | "symptoms" | "recommendations" | "calorie" | null>(null);
+  const [foodLogs, setFoodLogs] = useState<FoodLog[]>([]);
+  const [foodCalories, setFoodCalories] = useState<FoodCalories>({});
+  const [totalCalories, setTotalCalories] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+  
+        const today = new Date().toISOString().split('T')[0];
+        const foodRes = await fetch(`http://127.0.0.1:8000/api/foodlogs/?date=${today}`);
+        const foodData = await foodRes.json();
+        setFoodLogs(foodData);
+        const response = await fetch('/food_calories.csv');
+        const csvText = await response.text();
+        const lines = csvText.split('\n');
+        const caloriesData: FoodCalories = {};
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (line) {
+            const [food, calories] = line.split(',');
+            if (food && calories) {
+              caloriesData[food.toLowerCase()] = parseInt(calories);
+            }
+          }
+        }
+        setFoodCalories(caloriesData);
+      } catch (err) {
+   
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+   
+    let total = 0;
+    foodLogs.forEach(log => {
+      const getCaloriesForFood = (foodName: string): number => {
+        const normalizedName = foodName.toLowerCase().trim();
+        if (foodCalories[normalizedName]) {
+          return foodCalories[normalizedName];
+        }
+        for (const [food, calories] of Object.entries(foodCalories)) {
+          if (normalizedName.includes(food) || food.includes(normalizedName)) {
+            return calories;
+          }
+        }
+        return 0;
+      };
+      const calories = getCaloriesForFood(log.food) * 6;
+      if (calories > 0) {
+        const quantity = log.quantity.toLowerCase();
+        let multiplier = 1;
+        if (quantity.includes('2') || quantity.includes('two')) multiplier = 2;
+        else if (quantity.includes('3') || quantity.includes('three')) multiplier = 3;
+        else if (quantity.includes('4') || quantity.includes('four')) multiplier = 4;
+        else if (quantity.includes('5') || quantity.includes('five')) multiplier = 5;
+        else if (quantity.includes('1/2') || quantity.includes('0.5')) multiplier = 0.5;
+        else if (quantity.includes('1/4') || quantity.includes('0.25')) multiplier = 0.25;
+        total += calories * multiplier;
+      }
+    });
+    setTotalCalories(Math.round(total));
+  }, [foodLogs, foodCalories]);
+
   return (
     <>
       <main className="flex-1 flex flex-col md:flex-row gap-6 md:gap-8 justify-center items-center md:items-start mt-8 md:mt-12 px-2 sm:px-4 max-w-6xl mx-auto w-full">
@@ -80,7 +153,11 @@ export default function Log_data() {
         </button>
       </main>
       <div className="flex flex-col items-center w-full max-w-5xl mx-auto">
-        {activeTab && tabContent[activeTab]}
+        {activeTab === "food" && <Food />}
+        {activeTab === "history" && <History />}
+        {activeTab === "symptoms" && <Symptoms />}
+        {activeTab === "recommendations" && <Recommendations totalCalories={totalCalories} loading={loading} />}
+        {activeTab === "calorie" && <CalorieLookup />}
       </div>
     </>
   );
