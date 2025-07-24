@@ -75,7 +75,7 @@ const CaloriesTab: React.FC = () => {
   useEffect(() => {
     let total = 0;
     todayFoodLogs.forEach(log => {
-      const calories = getCaloriesForFood(log.food) * 6; 
+      const calories = getCaloriesForFood(log.food) * 5; 
       if (calories > 0) {
        
         const quantity = log.quantity.toLowerCase();
