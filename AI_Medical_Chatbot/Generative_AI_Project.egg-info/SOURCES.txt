@@ -1,4 +1,3 @@
-README.md
 setup.py
 Generative_AI_Project.egg-info/PKG-INFO
 Generative_AI_Project.egg-info/SOURCES.txt
