@@ -115,13 +115,16 @@ const Food: React.FC = () => {
                 Date
               </label>
               <input
-                type="date"
-                name="date"
-                value={form.date}
-                onChange={handleChange}
-                required
-                className="form-phlder w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
-              />
+      type="date"
+      name="date"
+      value={form.date}
+      onChange={handleChange}
+      onClick={(e) => {
+        e.currentTarget.showPicker();
+      }}
+      required
+      className="form-phlder w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50" 
+/>
             </div>
             {/* Submit Button */}
             <button

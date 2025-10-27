@@ -113,13 +113,28 @@ def setup_gemini_llm(gemini_key):
     # Configure Gemini API
     genai.configure(api_key=gemini_key)
     
-    # Initialize the LLM
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",
-        temperature=0.4,
-        max_output_tokens=500,
-        google_api_key=gemini_key
-    )
+
+    llm = None
+    possible_models = [
+        "gemini-1.5-flash-8b",
+        "gemini-1.5-flash",
+        "gemini-1.5-pro"
+    ]
+    last_error = None
+    for model_name in possible_models:
+        try:
+            llm = ChatGoogleGenerativeAI(
+                model=model_name,
+                temperature=0.4,
+                max_output_tokens=500,
+                google_api_key=gemini_key
+            )
+            break
+        except Exception as e:
+            last_error = e
+            continue
+    if llm is None:
+        raise RuntimeError(f"Failed to initialize Gemini LLM with any supported model: {last_error}")
     
     print("✅ Gemini LLM setup complete")
     return llm

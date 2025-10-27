@@ -1,0 +1,20 @@
+{
+  "name": "healthcare",
+  "version": "1.0.0",
+  "description": "A comprehensive health and wellness platform featuring an AI Medical Chatbot and a Diet & Calorie Tracking App. This project is organized into two main components:",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Devs7026/HealthCare.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Devs7026/HealthCare/issues"
+  },
+  "homepage": "https://github.com/Devs7026/HealthCare#readme"
+}
