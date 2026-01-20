@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import Header from "./components/header";
 import Footer from "./components/footer";
 import Food from "./components/food_log";
@@ -11,10 +12,20 @@ import Dashboard from "./components/DashBoard";
 import Log_data from "./components/Log";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Chatbot from "./components/chatbot";
 import { RedditOutlined } from '@ant-design/icons';
-import HealthLinks from "./components/health_links";
-import CaloriesTab from "./components/calories_tab";
+
+const Chatbot = dynamic(() => import("./components/chatbot"), {
+  loading: () => <div className="text-white text-center mt-12">Loading chatbot...</div>,
+  ssr: false,
+});
+const HealthLinks = dynamic(() => import("./components/health_links"), {
+  loading: () => <div className="text-white text-center mt-12">Loading healthcare links...</div>,
+  ssr: false,
+});
+const CaloriesTab = dynamic(() => import("./components/calories_tab"), {
+  loading: () => <div className="text-white text-center mt-12">Loading calories data...</div>,
+  ssr: false,
+});
 
 
 const DashboardIcon = () => (

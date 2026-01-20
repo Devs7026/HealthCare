@@ -33,19 +33,27 @@ const History: React.FC = () => {
   const [editForm, setEditForm] = useState({ food: '', quantity: '', meal: '', date: '' });
   const [infoMsg, setInfoMsg] = useState<string | null>(null);
 
+
+  const fetchFoodLogs = async (date?: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/api/foodlogs/', {
+        params: date ? { date } : undefined,
+      });
+      setFoodLogs(response.data);
+      setFilteredLogs(response.data);
+    } catch (err) {
+      setError('Failed to fetch food history.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchFoodLogs = async () => {
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/api/foodlogs/');
-        setFoodLogs(response.data);
-        setFilteredLogs(response.data);
-      } catch (err) {
-        setError('Failed to fetch food history.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchFoodLogs();
+    const today = new Date().toISOString().slice(0, 10);
+    setFilterDate(today);
+    fetchFoodLogs(today);
   }, []);
 
   const handleDelete = async (id: number) => {
@@ -85,11 +93,8 @@ const History: React.FC = () => {
   };
 
   const handleFilter = () => {
-    if (filterDate) {
-      setFilteredLogs(foodLogs.filter(log => log.date === filterDate));
-    } else {
-      setFilteredLogs(foodLogs);
-    }
+    // Ask the backend for logs for the selected date instead of filtering a huge list on the client.
+    fetchFoodLogs(filterDate || undefined);
   };
 
  
@@ -147,7 +152,11 @@ const History: React.FC = () => {
             </button>
             <button
               className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition"
-              onClick={() => { setFilterDate(''); setFilteredLogs(foodLogs); }}
+              onClick={() => {
+                setFilterDate('');
+                // Reset to unfiltered server data (all logs) if needed
+                fetchFoodLogs();
+              }}
             >
               Reset
             </button>

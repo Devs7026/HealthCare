@@ -6,11 +6,16 @@ class FoodLog(models.Model):
     food = models.TextField()
     quantity = models.TextField()
     meal = models.CharField(max_length=50)
-    date = models.DateField(default=now)
+    date = models.DateField(default=now, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.food} ({self.meal}) on {self.date}"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["-date", "-created_at"]),
+        ]
     
 
 class SymptomLog(models.Model):
