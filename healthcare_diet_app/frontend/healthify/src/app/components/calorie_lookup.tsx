@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Papa, { ParseResult } from 'papaparse';
 
-const CSV_PATH = '/food_calories.csv'; 
+const CSV_PATH = '/food_calories.csv';
 
 const CalorieLookup: React.FC = () => {
   const [calorieData, setCalorieData] = useState<Record<string, number>>({});
@@ -12,120 +12,178 @@ const CalorieLookup: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     fetch(CSV_PATH)
-      .then(response => {
-        if (!response.ok) throw new Error('CSV file not found');
-        return response.text();
-      })
+      .then(r => { if (!r.ok) throw new Error('CSV not found'); return r.text(); })
       .then(csvText => {
         Papa.parse(csvText, {
           header: true,
           skipEmptyLines: true,
           complete: (results: ParseResult<any>) => {
-            if (!results.data || !Array.isArray(results.data)) {
-              setError('Invalid CSV format.');
-              setLoading(false);
-              return;
-            }
+            if (!results.data || !Array.isArray(results.data)) { setError('Invalid CSV format.'); setLoading(false); return; }
             const data: Record<string, number> = {};
-            (results.data as any[]).forEach((row) => {
-              if (row.food && row.calories) {
-                data[String(row.food).trim().toLowerCase()] = Number(row.calories);
-              }
+            (results.data as any[]).forEach(row => {
+              if (row.food && row.calories) data[String(row.food).trim().toLowerCase()] = Number(row.calories);
             });
             setCalorieData(data);
             setError(null);
             setLoading(false);
           },
-          error: () => {
-            setError('Failed to parse CSV.');
-            setLoading(false);
-          }
+          error: () => { setError('Failed to parse CSV.'); setLoading(false); },
         });
       })
-      .catch(() => {
-        setError('Could not load calorie CSV file.');
-        setLoading(false);
-      });
+      .catch(() => { setError('Could not load calorie data.'); setLoading(false); });
   }, []);
-
 
   const filteredItems = Object.entries(calorieData)
     .filter(([item]) => item.includes(food.trim().toLowerCase()))
     .sort((a, b) => a[0].localeCompare(b[0]));
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-2 sm:px-4 md:px-8 py-8 mt-5" style={{ backgroundImage: "url('./food.jpg')", borderRadius: '100px' }}>
-      <div className="p-1 bg-gradient-to-r from-purple-500 via-pink-400 to-blue-500 rounded-2xl shadow-2xl w-full max-w-lg">
-        <div className="w-full bg-white rounded-2xl p-6 sm:p-8 shadow-xl font-sans">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-center mb-6 sm:mb-8 text-gray-800 tracking-tight">
-            Calorie Lookup
-          </h1>
-          {loading ? (
-            <div className="text-center text-lg text-gray-500">Loading calorie data...</div>
-          ) : error ? (
-            <div className="text-center text-lg text-red-600">{error}</div>
-          ) : (
-            <>
-              <div className="mb-6">
-                <label className="form-tags block mb-1 sm:mb-2 text-base sm:text-md font-semibold text-gray-700">
-                  Search Food Item
-                </label>
-                <input
-                  type="text"
-                  value={food}
-                  onChange={e => setFood(e.target.value)}
-                  placeholder="Type to search..."
-                  className="form-phlder w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-gray-200 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-none transition duration-200 text-gray-800 text-base bg-gray-50"
-                />
-              </div>
-              {/* Table of filtered food items */}
-              <div className="mt-2">
-                <h2 className="text-xl font-bold mb-3 text-gray-800 text-center">Food Items</h2>
-                {Object.keys(calorieData).length === 0 ? (
-                  <div className="text-center text-gray-500">No food items found in the CSV.</div>
-                ) : (
-                  <div
-                    style={{ maxHeight: 340, minHeight: 340, overflowY: 'auto' }}
-                    className="rounded-2xl border border-gray-200 bg-white shadow-lg flex flex-col justify-center"
-                  >
-                    {filteredItems.length === 0 ? (
-                      <div className="w-full h-full flex items-center justify-center text-gray-500 text-base">
-                        No matching food items found.
-                      </div>
-                    ) : (
-                      <table className="min-w-full text-sm text-left">
-                        <thead className="sticky top-0 z-10 bg-gradient-to-r from-purple-100 via-pink-100 to-blue-100">
-                          <tr>
-                            <th className="px-5 py-3 font-bold text-gray-700 text-base border-b border-gray-200">Food Item</th>
-                            <th className="px-5 py-3 font-bold text-gray-700 text-base border-b border-gray-200">Calories (kcal)</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredItems.map(([item, cal], idx) => (
-                            <tr
-                              key={item}
-                              className={
-                                `transition-colors duration-150 ${
-                                  idx % 2 === 0 ? 'bg-gray-50' : 'bg-purple-50'
-                                } hover:bg-purple-100`
-                              }
-                            >
-                              <td className="px-5 py-2 capitalize font-medium text-gray-800">{item}</td>
-                              <td className="px-5 py-2 text-gray-700">{cal}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    )}
-                  </div>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+    <div style={{ padding: '2rem 1rem', maxWidth: '640px', margin: '0 auto', width: '100%' }}>
+
+      {/* Header */}
+      <div className="animate-fade-in-down" style={{ marginBottom: '1.75rem' }}>
+        <span className="pill-badge mb-3 inline-flex">🔥 Calorie Database</span>
+        <h2 style={{ fontSize: '1.75rem', fontWeight: 900, letterSpacing: '-0.03em', color: 'var(--text-primary)', marginTop: '0.5rem' }}>
+          Calorie Lookup
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+          Search {Object.keys(calorieData).length} food items for calorie information.
+        </p>
       </div>
+
+      {loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '52px', borderRadius: '0.75rem' }} />)}
+        </div>
+      ) : error ? (
+        <div style={{
+          padding: '1.5rem', borderRadius: '1rem', textAlign: 'center',
+          background: 'rgba(244,63,94,0.08)', border: '1px solid rgba(244,63,94,0.2)',
+          color: '#f43f5e', fontSize: '0.9rem',
+        }}>
+          ⚠️ {error}
+        </div>
+      ) : (
+        <>
+          {/* Search input */}
+          <div className="animate-fade-in-up" style={{ position: 'relative', marginBottom: '1.25rem' }}>
+            <div style={{
+              position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)',
+              color: 'var(--text-muted)', pointerEvents: 'none',
+            }}>
+              <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              value={food}
+              onChange={e => setFood(e.target.value)}
+              placeholder="Search food items... (e.g. rice, chicken, apple)"
+              className="glass-input"
+              style={{ paddingLeft: '2.75rem' }}
+            />
+            {food && (
+              <button
+                onClick={() => setFood('')}
+                style={{
+                  position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)',
+                  background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)',
+                  fontSize: '1.1rem', lineHeight: 1,
+                }}
+              >
+                ×
+              </button>
+            )}
+          </div>
+
+          {/* Results count */}
+          {food && (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+              {filteredItems.length} result{filteredItems.length !== 1 ? 's' : ''} for "{food}"
+            </div>
+          )}
+
+          {/* Results list */}
+          <div
+            className="animate-fade-in-up delay-100"
+            style={{
+              maxHeight: '400px',
+              overflowY: 'auto',
+              border: '1px solid rgba(255,255,255,0.07)',
+              borderRadius: '1rem',
+              background: 'rgba(255,255,255,0.02)',
+            }}
+          >
+            {filteredItems.length === 0 ? (
+              <div style={{
+                padding: '3rem', textAlign: 'center',
+                color: 'var(--text-muted)', fontSize: '0.9rem',
+              }}>
+                {food ? '🔍 No matching items found.' : '⬆️ Start typing to search food items.'}
+              </div>
+            ) : (
+              <>
+                {/* Table header */}
+                <div style={{
+                  display: 'grid', gridTemplateColumns: '1fr auto',
+                  padding: '0.75rem 1.25rem',
+                  borderBottom: '1px solid rgba(255,255,255,0.07)',
+                  position: 'sticky', top: 0,
+                  background: 'rgba(13, 17, 23, 0.95)',
+                  backdropFilter: 'blur(12px)',
+                }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.06em' }}>FOOD ITEM</span>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.06em' }}>KCAL</span>
+                </div>
+                {/* Table rows */}
+                {filteredItems.map(([item, cal], idx) => (
+                  <div
+                    key={item}
+                    style={{
+                      display: 'grid', gridTemplateColumns: '1fr auto',
+                      padding: '0.75rem 1.25rem',
+                      borderBottom: idx < filteredItems.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+                      transition: 'background 0.15s ease',
+                      cursor: 'default',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = 'rgba(99,102,241,0.06)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
+                  >
+                    <span style={{ fontSize: '0.875rem', color: 'var(--text-primary)', textTransform: 'capitalize', fontWeight: 500 }}>
+                      {item}
+                    </span>
+                    <span style={{
+                      fontSize: '0.875rem', fontWeight: 700,
+                      color: cal > 400 ? '#f43f5e' : cal > 200 ? '#f59e0b' : '#10b981',
+                      background: `rgba(${cal > 400 ? '244,63,94' : cal > 200 ? '245,158,11' : '16,185,129'},0.1)`,
+                      padding: '0.2rem 0.6rem', borderRadius: '9999px',
+                    }}>
+                      {cal}
+                    </span>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+
+          {/* Legend */}
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '0.875rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            {[
+              { label: 'Low (≤200)', color: '#10b981' },
+              { label: 'Medium (201–400)', color: '#f59e0b' },
+              { label: 'High (>400)', color: '#f43f5e' },
+            ].map(l => (
+              <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.73rem', color: 'var(--text-muted)' }}>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: l.color }} />
+                {l.label}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
-export default CalorieLookup; 
+export default CalorieLookup;

@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FireOutlined, CalendarOutlined } from '@ant-design/icons';
-import { Spin } from 'antd';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 interface FoodLog {
   id: number;
@@ -17,181 +14,214 @@ interface FoodCalories {
   [key: string]: number;
 }
 
+const MEAL_COLORS: Record<string, { color: string; bg: string; icon: string }> = {
+  breakfast: { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', icon: '🌅' },
+  lunch:     { color: '#22d3ee', bg: 'rgba(34,211,238,0.12)',  icon: '☀️' },
+  dinner:    { color: '#6366f1', bg: 'rgba(99,102,241,0.12)',  icon: '🌙' },
+  snack:     { color: '#10b981', bg: 'rgba(16,185,129,0.12)',  icon: '🍎' },
+};
+
 const CaloriesTab: React.FC = () => {
   const [todayFoodLogs, setTodayFoodLogs] = useState<FoodLog[]>([]);
   const [foodCalories, setFoodCalories] = useState<FoodCalories>({});
   const [loading, setLoading] = useState(true);
   const [totalCalories, setTotalCalories] = useState(0);
 
-  // Load food calories data
   useEffect(() => {
     const loadCaloriesData = async () => {
       try {
         const response = await fetch('/food_calories.csv');
-        const csvText = await response.text();
-        const lines = csvText.split('\n');
-        const caloriesData: FoodCalories = {};
-        
-       
+        const csvText  = await response.text();
+        const lines    = csvText.split('\n');
+        const data: FoodCalories = {};
         for (let i = 1; i < lines.length; i++) {
           const line = lines[i].trim();
           if (line) {
             const [food, calories] = line.split(',');
-            if (food && calories) {
-              caloriesData[food.toLowerCase()] = parseInt(calories);
-            }
+            if (food && calories) data[food.toLowerCase()] = parseInt(calories);
           }
         }
-        setFoodCalories(caloriesData);
-      } catch (error) {
-        console.error('Error loading calories data:', error);
-        toast.error('Error loading calories data');
+        setFoodCalories(data);
+      } catch {
+        toast.error('Error loading calorie data');
       }
     };
-
     loadCaloriesData();
   }, []);
 
- 
   useEffect(() => {
     const fetchTodayFoodLogs = async () => {
       try {
         setLoading(true);
         const today = new Date().toISOString().split('T')[0];
-        const response = await axios.get(`http://127.0.0.1:8000/api/foodlogs/?date=${today}`);
-        setTodayFoodLogs(response.data);
-      } catch (error) {
-        console.error('Error fetching food logs:', error);
-        toast.error('Error fetching today\'s food logs');
+        const res   = await axios.get(`http://127.0.0.1:8000/api/foodlogs/?date=${today}`);
+        setTodayFoodLogs(res.data);
+      } catch {
+        toast.error("Error fetching today's food logs");
       } finally {
         setLoading(false);
       }
     };
-
     fetchTodayFoodLogs();
   }, []);
 
- 
+  const getCaloriesForFood = (foodName: string): number => {
+    const n = foodName.toLowerCase().trim();
+    if (foodCalories[n]) return foodCalories[n];
+    for (const [food, cal] of Object.entries(foodCalories)) {
+      if (n.includes(food) || food.includes(n)) return cal;
+    }
+    return 0;
+  };
+
   useEffect(() => {
     let total = 0;
     todayFoodLogs.forEach(log => {
-      const calories = getCaloriesForFood(log.food) * 5; 
-      if (calories > 0) {
-       
-        const quantity = log.quantity.toLowerCase();
-        let multiplier = 1;
-        
-        
-        if (quantity.includes('2') || quantity.includes('two')) multiplier = 2;
-        else if (quantity.includes('3') || quantity.includes('three')) multiplier = 3;
-        else if (quantity.includes('4') || quantity.includes('four')) multiplier = 4;
-        else if (quantity.includes('5') || quantity.includes('five')) multiplier = 5;
-        else if (quantity.includes('1/2') || quantity.includes('0.5')) multiplier = 0.5;
-        else if (quantity.includes('1/4') || quantity.includes('0.25')) multiplier = 0.25;
-        
-        total += calories * multiplier;
+      const cal = getCaloriesForFood(log.food) * 5;
+      if (cal > 0) {
+        const qty = log.quantity.toLowerCase();
+        let m = 1;
+        if (qty.includes('2') || qty.includes('two'))        m = 2;
+        else if (qty.includes('3') || qty.includes('three')) m = 3;
+        else if (qty.includes('4') || qty.includes('four'))  m = 4;
+        else if (qty.includes('5') || qty.includes('five'))  m = 5;
+        else if (qty.includes('1/2') || qty.includes('0.5')) m = 0.5;
+        else if (qty.includes('1/4') || qty.includes('0.25')) m = 0.25;
+        total += cal * m;
       }
     });
     setTotalCalories(Math.round(total));
   }, [todayFoodLogs, foodCalories]);
 
-  const getCaloriesForFood = (foodName: string): number => {
-    const normalizedName = foodName.toLowerCase().trim();
-    
-   
-    if (foodCalories[normalizedName]) {
-      return foodCalories[normalizedName];
-    }
-    
-   
-    for (const [food, calories] of Object.entries(foodCalories)) {
-      if (normalizedName.includes(food) || food.includes(normalizedName)) {
-        return calories;
-      }
-    }
-    
-    return 0;
-  };
+  const DAILY_GOAL = 2500;
+  const progress   = Math.min((totalCalories / DAILY_GOAL) * 100, 100);
+  const progressColor = progress > 120 ? '#f43f5e' : progress > 80 ? '#10b981' : '#6366f1';
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-2 sm:px-4 md:px-8 py-8 mt-5"
-        style={{
-          backgroundImage: "url('./Board.jpeg')",
-          borderRadius: '100px'
-        }}>
-        <div className="p-1 bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 rounded-2xl shadow-2xl w-full max-w-lg">
-          <div className="w-full bg-white rounded-2xl p-6 sm:p-8 shadow-xl font-sans flex items-center justify-center">
-            <Spin size="large" />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
   return (
-    <div
-      className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-2 sm:px-4 md:px-8 py-8 mt-5"
-      style={{
-        backgroundImage: "url('./Board.jpeg')",
-        borderRadius: '100px'
-      }}
-    >
-      <div className="p-1 bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 rounded-2xl shadow-2xl w-full max-w-2xl">
-        <div className="w-full bg-white rounded-2xl p-6 sm:p-8 shadow-xl font-sans">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-center mb-6 sm:mb-8 text-gray-800 tracking-tight">
-            <FireOutlined /> Today's Calories
-          </h1>
-          
-          <div className="mb-6 text-center">
-            <div className="text-sm text-gray-600 mb-2">
-              <CalendarOutlined /> {formatDate(new Date().toISOString())}
+    <div style={{ padding: '2rem 1rem', maxWidth: '680px', margin: '0 auto', width: '100%' }}>
+
+      {/* Header */}
+      <div className="animate-fade-in-down" style={{ marginBottom: '1.75rem' }}>
+        <span className="pill-badge mb-3 inline-flex">🔥 Today</span>
+        <h2 style={{ fontSize: '1.75rem', fontWeight: 900, letterSpacing: '-0.03em', color: 'var(--text-primary)', marginTop: '0.5rem' }}>
+          Daily Calories
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+          📅 {today}
+        </p>
+      </div>
+
+      {loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <div className="skeleton" style={{ height: '140px', borderRadius: '1.25rem' }} />
+          <div className="skeleton" style={{ height: '80px', borderRadius: '1rem' }} />
+          <div className="skeleton" style={{ height: '80px', borderRadius: '1rem' }} />
+        </div>
+      ) : (
+        <>
+          {/* Calorie summary card */}
+          <div
+            className="animate-fade-in-up glass-card"
+            style={{ padding: '1.75rem', marginBottom: '1.25rem', textAlign: 'center' }}
+          >
+            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.06em', marginBottom: '0.75rem' }}>
+              TOTAL CONSUMED TODAY
             </div>
-            <div className="text-4xl font-bold text-blue-600">
-              {totalCalories} calories
+            <div style={{
+              fontSize: 'clamp(3rem, 10vw, 4.5rem)',
+              fontWeight: 900,
+              letterSpacing: '-0.04em',
+              lineHeight: 1,
+              backgroundImage: `linear-gradient(135deg, ${progressColor}, ${progressColor}99)`,
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              marginBottom: '0.25rem',
+            }}>
+              {totalCalories}
             </div>
-            <div className="text-sm text-gray-500 mt-1">
-              Total consumed today
+            <div style={{ fontSize: '1rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+              kcal out of {DAILY_GOAL} goal
+            </div>
+
+            {/* Progress bar */}
+            <div style={{
+              marginTop: '1.25rem',
+              height: '8px', borderRadius: '9999px',
+              background: 'rgba(255,255,255,0.06)',
+              overflow: 'hidden',
+            }}>
+              <div style={{
+                height: '100%',
+                width: `${progress}%`,
+                borderRadius: '9999px',
+                background: `linear-gradient(90deg, ${progressColor}80, ${progressColor})`,
+                transition: 'width 1s ease',
+                boxShadow: `0 0 10px ${progressColor}50`,
+              }} />
+            </div>
+            <div style={{ marginTop: '0.5rem', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+              {progress.toFixed(0)}% of daily goal
             </div>
           </div>
 
+          {/* Food log list */}
           {todayFoodLogs.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="text-gray-500 text-lg mb-2">No food logged today</div>
-              <div className="text-gray-400 text-sm">Log your meals to see calorie information</div>
+            <div style={{
+              padding: '3rem', textAlign: 'center',
+              borderRadius: '1.25rem',
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.07)',
+            }}>
+              <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🍽️</div>
+              <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.4rem' }}>
+                No meals logged today
+              </div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                Head to the Food Log tab to start tracking your meals.
+              </div>
             </div>
           ) : (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-700 mb-4">Today's Food Log</h2>
-              {todayFoodLogs.map((log) => {
-                const calories = getCaloriesForFood(log.food) * 6; 
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+              <h3 style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.06em', marginBottom: '0.25rem' }}>
+                TODAY'S MEALS
+              </h3>
+              {todayFoodLogs.map((log, i) => {
+                const cal  = getCaloriesForFood(log.food) * 6;
+                const meal = MEAL_COLORS[log.meal] || { color: '#6366f1', bg: 'rgba(99,102,241,0.08)', icon: '🍴' };
                 return (
-                  <div key={log.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="font-semibold text-gray-800">{log.food}</div>
-                        <div className="text-sm text-gray-600">
-                          {log.quantity} • {log.meal}
+                  <div
+                    key={log.id}
+                    className={`animate-fade-in-up delay-${Math.min((i + 1) * 100, 500)}`}
+                    style={{
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                      padding: '0.875rem 1.25rem',
+                      borderRadius: '0.875rem',
+                      background: meal.bg,
+                      border: `1px solid ${meal.color}25`,
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <span style={{ fontSize: '1.25rem' }}>{meal.icon}</span>
+                      <div>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', textTransform: 'capitalize' }}>
+                          {log.food}
+                        </div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
+                          {log.quantity} · <span style={{ color: meal.color, textTransform: 'capitalize' }}>{log.meal}</span>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="font-bold text-blue-600">
-                          {calories > 0 ? `${calories} cal` : 'Unknown'}
-                        </div>
-                        {calories === 0 && (
-                          <div className="text-xs text-gray-400">Not in database</div>
-                        )}
-                      </div>
+                    </div>
+                    <div style={{
+                      fontSize: '0.9rem', fontWeight: 700,
+                      color: cal > 0 ? meal.color : 'var(--text-muted)',
+                      background: cal > 0 ? `${meal.color}15` : 'transparent',
+                      padding: '0.25rem 0.75rem', borderRadius: '9999px',
+                    }}>
+                      {cal > 0 ? `${cal} kcal` : '—'}
                     </div>
                   </div>
                 );
@@ -199,18 +229,20 @@ const CaloriesTab: React.FC = () => {
             </div>
           )}
 
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <div className="text-sm text-gray-600">
-              <strong>Note:</strong> Calorie estimates are based on standard serving sizes. 
-              Actual calories may vary based on preparation method and portion size.
-            </div>
+          {/* Disclaimer */}
+          <div style={{
+            marginTop: '1.5rem', padding: '0.875rem 1rem',
+            borderRadius: '0.875rem',
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.6,
+          }}>
+            💡 <strong style={{ color: 'var(--text-secondary)' }}>Note:</strong> Calorie estimates are based on standard serving sizes. Actual calories may vary.
           </div>
-
-          <ToastContainer />
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };
 
-export default CaloriesTab; 
+export default CaloriesTab;

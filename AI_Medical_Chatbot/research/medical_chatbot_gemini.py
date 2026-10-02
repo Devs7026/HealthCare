@@ -70,7 +70,6 @@ def setup_pinecone(pinecone_key, index_name="medicalbot"):
     print("🌲 Setting up Pinecone...")
     pc = Pinecone(api_key=pinecone_key)
     
-    # Try to create index if it doesn't exist
     try:
         pc.create_index(
             name=index_name,

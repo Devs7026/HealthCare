@@ -17,148 +17,141 @@ interface FoodCalories {
   [key: string]: number;
 }
 
+type Tab = "food" | "history" | "symptoms" | "recommendations" | "calorie";
+
+const TABS: { id: Tab; label: string; icon: string; color: string }[] = [
+  { id: "food",            label: "Food Log",       icon: "🍽️", color: "#22d3ee" },
+  { id: "history",         label: "History",        icon: "📅", color: "#f59e0b" },
+  { id: "symptoms",        label: "Symptoms",       icon: "🩺", color: "#f43f5e" },
+  { id: "recommendations", label: "Advice",         icon: "✨", color: "#10b981" },
+  { id: "calorie",         label: "Calorie Lookup", icon: "🔥", color: "#a855f7" },
+];
+
 export default function Log_data() {
-  const [activeTab, setActiveTab] = useState<"food" | "history" | "symptoms" | "recommendations" | "calorie" | null>(null);
-  const [foodLogs, setFoodLogs] = useState<FoodLog[]>([]);
-  const [foodCalories, setFoodCalories] = useState<FoodCalories>({});
+  const [activeTab, setActiveTab] = useState<Tab>("food");
+  const [foodLogs,      setFoodLogs]      = useState<FoodLog[]>([]);
+  const [foodCalories,  setFoodCalories]  = useState<FoodCalories>({});
   const [totalCalories, setTotalCalories] = useState<number>(0);
-  const [loading, setLoading] = useState(true);
+  const [loading,       setLoading]       = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-  
         const today = new Date().toISOString().split('T')[0];
         const foodRes = await fetch(`http://127.0.0.1:8000/api/foodlogs/?date=${today}`);
         const foodData = await foodRes.json();
         setFoodLogs(foodData);
+
         const response = await fetch('/food_calories.csv');
-        const csvText = await response.text();
-        const lines = csvText.split('\n');
+        const csvText  = await response.text();
+        const lines    = csvText.split('\n');
         const caloriesData: FoodCalories = {};
         for (let i = 1; i < lines.length; i++) {
           const line = lines[i].trim();
           if (line) {
             const [food, calories] = line.split(',');
-            if (food && calories) {
-              caloriesData[food.toLowerCase()] = parseInt(calories);
-            }
+            if (food && calories) caloriesData[food.toLowerCase()] = parseInt(calories);
           }
         }
         setFoodCalories(caloriesData);
-      } catch (err) {
-   
-      } finally {
-        setLoading(false);
-      }
+      } catch { /* silent */ }
+      finally { setLoading(false); }
     };
     fetchData();
   }, []);
 
   useEffect(() => {
-   
     let total = 0;
     foodLogs.forEach(log => {
-      const getCaloriesForFood = (foodName: string): number => {
-        const normalizedName = foodName.toLowerCase().trim();
-        if (foodCalories[normalizedName]) {
-          return foodCalories[normalizedName];
-        }
-        for (const [food, calories] of Object.entries(foodCalories)) {
-          if (normalizedName.includes(food) || food.includes(normalizedName)) {
-            return calories;
-          }
+      const getCaloriesForFood = (name: string): number => {
+        const n = name.toLowerCase().trim();
+        if (foodCalories[n]) return foodCalories[n];
+        for (const [food, cal] of Object.entries(foodCalories)) {
+          if (n.includes(food) || food.includes(n)) return cal;
         }
         return 0;
       };
-      const calories = getCaloriesForFood(log.food) * 6;
-      if (calories > 0) {
-        const quantity = log.quantity.toLowerCase();
-        let multiplier = 1;
-        if (quantity.includes('2') || quantity.includes('two')) multiplier = 2;
-        else if (quantity.includes('3') || quantity.includes('three')) multiplier = 3;
-        else if (quantity.includes('4') || quantity.includes('four')) multiplier = 4;
-        else if (quantity.includes('5') || quantity.includes('five')) multiplier = 5;
-        else if (quantity.includes('1/2') || quantity.includes('0.5')) multiplier = 0.5;
-        else if (quantity.includes('1/4') || quantity.includes('0.25')) multiplier = 0.25;
-        total += calories * multiplier;
+      const cal = getCaloriesForFood(log.food) * 6;
+      if (cal > 0) {
+        const qty = log.quantity.toLowerCase();
+        let m = 1;
+        if (qty.includes('2') || qty.includes('two'))       m = 2;
+        else if (qty.includes('3') || qty.includes('three')) m = 3;
+        else if (qty.includes('4') || qty.includes('four'))  m = 4;
+        else if (qty.includes('5') || qty.includes('five'))  m = 5;
+        else if (qty.includes('1/2') || qty.includes('0.5')) m = 0.5;
+        else if (qty.includes('1/4') || qty.includes('0.25')) m = 0.25;
+        total += cal * m;
       }
     });
     setTotalCalories(Math.round(total));
   }, [foodLogs, foodCalories]);
 
   return (
-    <>
-      <main className="flex-1 flex flex-col md:flex-row gap-6 md:gap-8 justify-center items-center md:items-start mt-8 md:mt-12 px-2 sm:px-4 max-w-6xl mx-auto w-full">
-        {/* Food Logging Button */}
-        <button
-          onClick={() => setActiveTab("food")}
-          className={`w-full md:flex-1 bg-gradient-to-br from-blue-800 to-gray-800 hover:from-blue-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-blue-500 min-h-[180px] sm:min-h-[220px] ${
-            activeTab === "food" ? "ring-4 ring-blue-400" : ""
-          }`}
-        >
-          <span className="text-xl sm:text-2xl font-bold mb-2">Food Logging</span>
-          <span className="text-gray-300 text-base text-center">
-            Log your meals here.
-          </span>
-        </button>
-        {/* Food History Log Button */}
-        <button
-          onClick={() => setActiveTab("history")}
-          className={`w-full md:flex-1 bg-gradient-to-br from-yellow-800 to-gray-800 hover:from-yellow-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-yellow-500 min-h-[180px] sm:min-h-[220px] ${
-            activeTab === "history" ? "ring-4 ring-yellow-400" : ""
-          }`}
-        >
-          <span className="text-xl sm:text-2xl font-bold mb-2">Food History</span>
-          <span className="text-gray-300 text-base text-center">
-            View your food log history.
-          </span>
-        </button>
-        {/* Symptoms Log Button */}
-        <button
-          onClick={() => setActiveTab("symptoms")}
-          className={`w-full md:flex-1 bg-gradient-to-br from-red-800 to-gray-800 hover:from-red-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-red-500 min-h-[180px] sm:min-h-[220px] ${
-            activeTab === "symptoms" ? "ring-4 ring-red-400" : ""
-          }`}
-        >
-          <span className="text-xl sm:text-2xl font-bold mb-2">Symptoms Log</span>
-          <span className="text-gray-300 text-base text-center">
-            Track your symptoms here.
-          </span>
-        </button>
-        {/* Recommendations Button */}
-        <button
-          onClick={() => setActiveTab("recommendations")}
-          className={`w-full md:flex-1 bg-gradient-to-br from-green-800 to-gray-800 hover:from-green-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-green-500 min-h-[180px] sm:min-h-[220px] ${
-            activeTab === "recommendations" ? "ring-4 ring-green-400" : ""
-          }`}
-        >
-          <span className="text-xl sm:text-2xl font-bold mb-2">Recommendations</span>
-          <span className="text-gray-300 text-base text-center">
-            Personalized dietary advice will appear here.
-          </span>
-        </button>
-        {/* Calorie Lookup Button */}
-        <button
-          onClick={() => setActiveTab("calorie")}
-          className={`w-full md:flex-1 bg-gradient-to-br from-purple-800 to-gray-800 hover:from-purple-700 hover:to-gray-700 transition-all text-white rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center focus:outline-none focus:ring-4 focus:ring-purple-500 min-h-[180px] sm:min-h-[220px] ${
-            activeTab === "calorie" ? "ring-4 ring-purple-400" : ""
-          }`}
-        >
-          <span className="text-xl sm:text-2xl font-bold mb-2">Calorie Lookup</span>
-          <span className="text-gray-300 text-base text-center">
-            Find calories for any food item.
-          </span>
-        </button>
-      </main>
-      <div className="flex flex-col items-center w-full max-w-5xl mx-auto">
-        {activeTab === "food" && <Food />}
-        {activeTab === "history" && <History />}
-        {activeTab === "symptoms" && <Symptoms />}
-        {activeTab === "recommendations" && <Recommendations totalCalories={totalCalories} loading={loading} />}
-        {activeTab === "calorie" && <CalorieLookup />}
+    <div className="flex flex-col w-full" style={{ minHeight: '70vh' }}>
+
+      {/* Sticky pill tab bar */}
+      <div style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 30,
+        background: 'rgba(5, 8, 16, 0.9)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        padding: '0.75rem 1rem',
+      }}>
+        <div style={{
+          display: 'flex',
+          gap: '0.375rem',
+          maxWidth: '800px',
+          margin: '0 auto',
+          overflowX: 'auto',
+          paddingBottom: '2px',
+        }}>
+          {TABS.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '9999px',
+                  border: `1px solid ${isActive ? tab.color + '40' : 'rgba(255,255,255,0.08)'}`,
+                  background: isActive
+                    ? `rgba(${tab.id === 'food' ? '34,211,238' : tab.id === 'history' ? '245,158,11' : tab.id === 'symptoms' ? '244,63,94' : tab.id === 'recommendations' ? '16,185,129' : '168,85,247'},0.12)`
+                    : 'rgba(255,255,255,0.04)',
+                  color: isActive ? tab.color : 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  fontSize: '0.82rem',
+                  fontWeight: isActive ? 700 : 500,
+                  letterSpacing: '0.01em',
+                  transition: 'all 0.2s ease',
+                  whiteSpace: 'nowrap',
+                  boxShadow: isActive ? `0 0 16px rgba(${tab.id === 'food' ? '34,211,238' : tab.id === 'history' ? '245,158,11' : tab.id === 'symptoms' ? '244,63,94' : tab.id === 'recommendations' ? '16,185,129' : '168,85,247'},0.2)` : 'none',
+                }}
+              >
+                <span style={{ fontSize: '0.9rem' }}>{tab.icon}</span>
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
-    </>
+
+      {/* Tab content */}
+      <div className="flex-1 animate-fade-in-up" style={{ padding: '0' }}>
+        {activeTab === "food"            && <Food />}
+        {activeTab === "history"         && <History />}
+        {activeTab === "symptoms"        && <Symptoms />}
+        {activeTab === "recommendations" && <Recommendations totalCalories={totalCalories} loading={loading} />}
+        {activeTab === "calorie"         && <CalorieLookup />}
+      </div>
+    </div>
   );
-} 
+}

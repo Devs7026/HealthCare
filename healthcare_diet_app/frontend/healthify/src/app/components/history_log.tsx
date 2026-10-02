@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../css/history_log.css';
-import { HistoryOutlined } from '@ant-design/icons';
 import { saveAs } from 'file-saver';
 
-// Food log type definition
 interface FoodLog {
   id: number;
   food: string;
@@ -13,26 +10,30 @@ interface FoodLog {
   date: string;
 }
 
+const MEAL_COLORS: Record<string, { color: string; bg: string; icon: string }> = {
+  breakfast: { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', icon: '🌅' },
+  lunch:     { color: '#22d3ee', bg: 'rgba(34,211,238,0.12)',  icon: '☀️' },
+  dinner:    { color: '#6366f1', bg: 'rgba(99,102,241,0.12)',  icon: '🌙' },
+  snack:     { color: '#10b981', bg: 'rgba(16,185,129,0.12)',  icon: '🍎' },
+};
 
-const groupByDate = (logs: FoodLog[]) => {
-  return logs.reduce((acc: Record<string, FoodLog[]>, log) => {
+const groupByDate = (logs: FoodLog[]) =>
+  logs.reduce((acc: Record<string, FoodLog[]>, log) => {
     if (!acc[log.date]) acc[log.date] = [];
     acc[log.date].push(log);
     return acc;
   }, {});
-};
 
 const History: React.FC = () => {
-  const [foodLogs, setFoodLogs] = useState<FoodLog[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [filterDate, setFilterDate] = useState<string>('');
+  const [foodLogs,     setFoodLogs]     = useState<FoodLog[]>([]);
+  const [loading,      setLoading]      = useState(true);
+  const [error,        setError]        = useState<string | null>(null);
+  const [filterDate,   setFilterDate]   = useState('');
   const [filteredLogs, setFilteredLogs] = useState<FoodLog[]>([]);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [editLog, setEditLog] = useState<FoodLog | null>(null);
-  const [editForm, setEditForm] = useState({ food: '', quantity: '', meal: '', date: '' });
-  const [infoMsg, setInfoMsg] = useState<string | null>(null);
-
+  const [deleteId,     setDeleteId]     = useState<number | null>(null);
+  const [editLog,      setEditLog]      = useState<FoodLog | null>(null);
+  const [editForm,     setEditForm]     = useState({ food: '', quantity: '', meal: '', date: '' });
+  const [infoMsg,      setInfoMsg]      = useState<string | null>(null);
 
   const fetchFoodLogs = async (date?: string) => {
     setLoading(true);
@@ -43,7 +44,7 @@ const History: React.FC = () => {
       });
       setFoodLogs(response.data);
       setFilteredLogs(response.data);
-    } catch (err) {
+    } catch {
       setError('Failed to fetch food history.');
     } finally {
       setLoading(false);
@@ -59,10 +60,10 @@ const History: React.FC = () => {
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`http://127.0.0.1:8000/api/foodlogs/${id}/`);
-      setFoodLogs((prev) => prev.filter((log) => log.id !== id));
-      setFilteredLogs((prev) => prev.filter((log) => log.id !== id));
+      setFoodLogs(prev => prev.filter(l => l.id !== id));
+      setFilteredLogs(prev => prev.filter(l => l.id !== id));
       setDeleteId(null);
-    } catch (err) {
+    } catch {
       setError('Failed to delete food log');
     }
   };
@@ -82,230 +83,349 @@ const History: React.FC = () => {
     if (!editLog) return;
     try {
       const response = await axios.put(`http://127.0.0.1:8000/api/foodlogs/${editLog.id}/`, editForm);
-      setFoodLogs((prev) => prev.map((log) => log.id === editLog.id ? response.data : log));
-      setFilteredLogs((prev) => prev.map((log) => log.id === editLog.id ? response.data : log));
+      setFoodLogs(prev => prev.map(l => l.id === editLog.id ? response.data : l));
+      setFilteredLogs(prev => prev.map(l => l.id === editLog.id ? response.data : l));
       setEditLog(null);
       setInfoMsg('Food log updated successfully!');
       setTimeout(() => setInfoMsg(null), 3000);
-    } catch (err) {
+    } catch {
       setError('Failed to update food log');
     }
   };
 
-  const handleFilter = () => {
-    // Ask the backend for logs for the selected date instead of filtering a huge list on the client.
-    fetchFoodLogs(filterDate || undefined);
-  };
+  const handleFilter = () => fetchFoodLogs(filterDate || undefined);
 
- 
   const downloadCSV = () => {
     const headers = ['Food Item', 'Quantity', 'Meal', 'Date'];
-    const rows = filteredLogs.map(log => [log.food, log.quantity, log.meal, log.date]);
-    const csvContent = [headers, ...rows]
-      .map(row => row.map(field => '"' + String(field).replace(/"/g, '""') + '"').join(','))
+    const rows    = filteredLogs.map(l => [l.food, l.quantity, l.meal, l.date]);
+    const csv     = [headers, ...rows]
+      .map(row => row.map(f => '"' + String(f).replace(/"/g, '""') + '"').join(','))
       .join('\r\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    saveAs(blob, 'food_log_history.csv');
+    saveAs(new Blob([csv], { type: 'text/csv;charset=utf-8;' }), 'food_log_history.csv');
   };
 
-  const logsByDate = groupByDate(filteredLogs);
+  const logsByDate  = groupByDate(filteredLogs);
   const sortedDates = Object.keys(logsByDate).sort((a, b) => b.localeCompare(a));
 
   return (
-    <div
-      className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-2 sm:px-4 md:px-8 py-8 mt-5"
-      style={{
-        backgroundImage: "url('./Board.jpeg')",
-        borderRadius: '100px'
-      }}
-    >
-      <div className="p-1 bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 rounded-2xl shadow-2xl w-full max-w-4xl">
-        <div className="history-log-card">
-          <h1 className="history-log-heading">
-            <span style={{ verticalAlign: 'middle', marginRight: 8 }}>
-              <HistoryOutlined />
-            </span>
-            HISTORY OF FOOD EATEN
-          </h1>
-          {/* Filter Bar */}
-          <div className="history-log-filterbar">
-            <button
-              className="px-4 py-2 rounded bg-green-600 text-white font-semibold hover:bg-green-700 transition mr-2"
-              onClick={downloadCSV}
-              type="button"
-              style={{ marginRight: 8 }}
-            >
-              Download CSV
-            </button>
-            <input
-              type="date"
-              value={filterDate}
-              onChange={e => setFilterDate(e.target.value)}
-              className="border rounded px-3 py-2 text-gray-700"
-              style={{ minWidth: 120 }}
-            />
-            <button
-              className="px-4 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
-              onClick={handleFilter}
-            >
-              Filter
-            </button>
-            <button
-              className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition"
-              onClick={() => {
-                setFilterDate('');
-                // Reset to unfiltered server data (all logs) if needed
-                fetchFoodLogs();
-              }}
-            >
-              Reset
-            </button>
+    <div style={{ padding: '2rem 1rem', maxWidth: '800px', margin: '0 auto', width: '100%' }}>
+
+      {/* Header */}
+      <div className="animate-fade-in-down" style={{ marginBottom: '1.5rem' }}>
+        <span className="pill-badge mb-3 inline-flex">📅 Food History</span>
+        <h2 style={{ fontSize: '1.75rem', fontWeight: 900, letterSpacing: '-0.03em', color: 'var(--text-primary)', marginTop: '0.5rem' }}>
+          Meal History
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+          Browse, edit and export your food log records.
+        </p>
+      </div>
+
+      {/* Filter bar */}
+      <div
+        className="animate-fade-in-up"
+        style={{
+          display: 'flex', flexWrap: 'wrap', gap: '0.625rem',
+          padding: '1rem 1.25rem',
+          borderRadius: '1rem',
+          background: 'rgba(255,255,255,0.03)',
+          border: '1px solid rgba(255,255,255,0.07)',
+          marginBottom: '1.25rem',
+          alignItems: 'center',
+        }}
+      >
+        <input
+          type="date"
+          value={filterDate}
+          onChange={e => setFilterDate(e.target.value)}
+          style={{ colorScheme: 'dark' }}
+          className="glass-input"
+          style={{
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '0.625rem',
+            color: 'var(--text-primary)',
+            padding: '0.5rem 0.875rem',
+            fontSize: '0.875rem',
+            outline: 'none',
+            colorScheme: 'dark',
+          } as React.CSSProperties}
+        />
+        <button
+          onClick={handleFilter}
+          style={{
+            padding: '0.5rem 1.25rem',
+            borderRadius: '0.625rem',
+            border: 'none',
+            background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+            color: 'white',
+            fontSize: '0.85rem', fontWeight: 700,
+            cursor: 'pointer',
+          }}
+        >
+          Filter
+        </button>
+        <button
+          onClick={() => { setFilterDate(''); fetchFoodLogs(); }}
+          style={{
+            padding: '0.5rem 1.25rem',
+            borderRadius: '0.625rem',
+            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'rgba(255,255,255,0.05)',
+            color: 'var(--text-secondary)',
+            fontSize: '0.85rem', fontWeight: 600,
+            cursor: 'pointer',
+          }}
+        >
+          Reset
+        </button>
+        <div style={{ flex: 1 }} />
+        <button
+          onClick={downloadCSV}
+          style={{
+            display: 'flex', alignItems: 'center', gap: '0.4rem',
+            padding: '0.5rem 1.25rem',
+            borderRadius: '0.625rem',
+            border: '1px solid rgba(16,185,129,0.3)',
+            background: 'rgba(16,185,129,0.1)',
+            color: '#10b981',
+            fontSize: '0.85rem', fontWeight: 700,
+            cursor: 'pointer',
+          }}
+        >
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Export CSV
+        </button>
+      </div>
+
+      {/* Status messages */}
+      {infoMsg && (
+        <div style={{ marginBottom: '1rem', padding: '0.75rem 1rem', borderRadius: '0.75rem', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', color: '#10b981', fontSize: '0.875rem' }}>
+          ✅ {infoMsg}
+        </div>
+      )}
+      {error && (
+        <div style={{ marginBottom: '1rem', padding: '0.75rem 1rem', borderRadius: '0.75rem', background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.25)', color: '#f43f5e', fontSize: '0.875rem' }}>
+          ⚠️ {error}
+        </div>
+      )}
+
+      {/* Content */}
+      {loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '72px', borderRadius: '0.875rem' }} />)}
+        </div>
+      ) : filteredLogs.length === 0 ? (
+        <div style={{
+          padding: '3rem', textAlign: 'center', borderRadius: '1.25rem',
+          background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+        }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>📭</div>
+          <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.4rem' }}>
+            No food history found
           </div>
-          {infoMsg && (
-            <div className="mb-4 text-green-700">{infoMsg}</div>
-          )}
-          {error && (
-            <div className="mb-4 text-red-700">{error}</div>
-          )}
-          {/* SCROLLABLE CONTENT */}
-          <div
-            className="space-y-8"
-            style={{
-              maxHeight: '340px', 
-              overflowY: 'auto',
-              overscrollBehavior: 'contain',
-              paddingRight: '2px'
-            }}
-          >
-            {loading ? (
-              <div className="w-full p-6 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 text-center text-gray-400 font-medium text-lg">
-                Loading food history...
-              </div>
-            ) : filteredLogs.length === 0 ? (
-              <div className="w-full p-6 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 text-center text-gray-400 font-medium text-lg">
-                No food history found for this date.
-              </div>
-            ) : (
-              sortedDates.map(date => (
-                <div key={date} className="w-full mb-2">
-                  <div className="history-log-date">{date}</div>
-                  <div className="overflow-x-auto">
-                    <table className="history-log-table">
-                      <thead>
-                        <tr>
-                          <th>Food Item</th>
-                          <th>Quantity</th>
-                          <th>Meal</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {logsByDate[date].map(log => (
-                          <tr key={log.id}>
-                            <td className="font-semibold">{log.food}</td>
-                            <td>{log.quantity}</td>
-                            <td>{log.meal}</td>
-                            <td>
-                              <div className="history-log-action-btns" style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap' }}>
-                                <button
-                                  type="button"
-                                  onClick={() => handleEditClick(log)}
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => setDeleteId(log.id)}
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                              {deleteId === log.id && (
-                                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30">
-                                  <div className="bg-white p-8 rounded shadow-xl flex flex-col items-center" style={{ width: '95vw', maxWidth: 400 }}>
-                                    <p className="mb-4 text-lg font-semibold">Delete this record?</p>
-                                    <div className="flex gap-4 flex-wrap justify-center">
-                                      <button className="px-4 py-2 rounded bg-red-600 text-white font-semibold hover:bg-red-700 transition" onClick={() => handleDelete(log.id)}>Yes</button>
-                                      <button className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition" onClick={() => setDeleteId(null)}>No</button>
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+            Try a different date or log some meals first.
+          </div>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {sortedDates.map(date => (
+            <div key={date}>
+              {/* Date header */}
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '0.75rem',
+                marginBottom: '0.75rem',
+              }}>
+                <div style={{
+                  padding: '0.3rem 0.875rem',
+                  borderRadius: '9999px',
+                  background: 'rgba(99,102,241,0.12)',
+                  border: '1px solid rgba(99,102,241,0.25)',
+                  fontSize: '0.8rem', fontWeight: 700,
+                  color: 'var(--accent-indigo)',
+                }}>
+                  {new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                 </div>
-              ))
-            )}
-          </div>
-          {/* Edit Modal */}
-          {editLog && (
-            <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30">
-              <div className="bg-white p-8 rounded shadow-xl w-full max-w-md flex flex-col items-center text-black" style={{ width: '95vw', maxWidth: 400 }}>
-                <h2 className="text-xl font-bold mb-4">Edit Food Log</h2>
-                <form onSubmit={handleEditSubmit} className="w-full space-y-4">
-                  <div>
-                    <label className="block mb-1 font-semibold">Food Item</label>
-                    <input
-                      type="text"
-                      name="food"
-                      value={editForm.food}
-                      onChange={handleEditChange}
-                      className="w-full border rounded px-3 py-2"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block mb-1 font-semibold">Quantity</label>
-                    <input
-                      type="text"
-                      name="quantity"
-                      value={editForm.quantity}
-                      onChange={handleEditChange}
-                      className="w-full border rounded px-3 py-2"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block mb-1 font-semibold">Meal</label>
-                    <select
-                      name="meal"
-                      value={editForm.meal}
-                      onChange={handleEditChange}
-                      className="w-full border rounded px-3 py-2"
-                      required
-                    >
-                      <option value="">Select meal</option>
-                      <option value="breakfast">Breakfast</option>
-                      <option value="lunch">Lunch</option>
-                      <option value="dinner">Dinner</option>
-                      <option value="snack">Snack</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block mb-1 font-semibold">Date</label>
-                    <input
-                      type="date"
-                      name="date"
-                      value={editForm.date}
-                      onChange={handleEditChange}
-                      className="w-full border rounded px-3 py-2"
-                      required
-                    />
-                  </div>
-                  <div className="flex gap-4 justify-center mt-4 flex-wrap">
-                    <button type="submit" className="px-4 py-2 rounded bg-green-600 text-white font-semibold hover:bg-green-700 transition">Save</button>
-                    <button type="button" className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold hover:bg-red-300 transition" onClick={() => setEditLog(null)}>Cancel</button>
-                  </div>
-                </form>
+                <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                  {logsByDate[date].length} item{logsByDate[date].length !== 1 ? 's' : ''}
+                </span>
+              </div>
+
+              {/* Entries */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {logsByDate[date].map(log => {
+                  const meal = MEAL_COLORS[log.meal] || { color: '#6366f1', bg: 'rgba(99,102,241,0.08)', icon: '🍴' };
+                  return (
+                    <div key={log.id} style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      padding: '0.875rem 1.25rem',
+                      borderRadius: '0.875rem',
+                      background: meal.bg,
+                      border: `1px solid ${meal.color}25`,
+                      gap: '0.75rem',
+                      flexWrap: 'wrap',
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1 }}>
+                        <span style={{ fontSize: '1.1rem' }}>{meal.icon}</span>
+                        <div>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', textTransform: 'capitalize' }}>
+                            {log.food}
+                          </div>
+                          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                            {log.quantity} · <span style={{ color: meal.color, textTransform: 'capitalize' }}>{log.meal}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                          onClick={() => handleEditClick(log)}
+                          style={{
+                            padding: '0.35rem 0.875rem', borderRadius: '0.5rem',
+                            border: '1px solid rgba(99,102,241,0.3)',
+                            background: 'rgba(99,102,241,0.1)',
+                            color: '#6366f1', fontSize: '0.8rem', fontWeight: 600,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => setDeleteId(log.id)}
+                          style={{
+                            padding: '0.35rem 0.875rem', borderRadius: '0.5rem',
+                            border: '1px solid rgba(244,63,94,0.3)',
+                            background: 'rgba(244,63,94,0.1)',
+                            color: '#f43f5e', fontSize: '0.8rem', fontWeight: 600,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+
+                      {/* Delete confirm */}
+                      {deleteId === log.id && (
+                        <div style={{
+                          position: 'fixed', inset: 0, zIndex: 100,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)',
+                        }}>
+                          <div style={{
+                            background: 'var(--bg-elevated)',
+                            border: '1px solid rgba(244,63,94,0.3)',
+                            borderRadius: '1.25rem',
+                            padding: '2rem',
+                            maxWidth: '380px', width: '90vw',
+                            textAlign: 'center',
+                          }}>
+                            <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🗑️</div>
+                            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Delete this record?</div>
+                            <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+                              "{log.food}" — {log.meal} on {date}
+                            </div>
+                            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+                              <button onClick={() => handleDelete(log.id)} style={{
+                                padding: '0.6rem 1.5rem', borderRadius: '0.75rem',
+                                border: 'none', background: '#f43f5e',
+                                color: 'white', fontWeight: 700, cursor: 'pointer',
+                              }}>Delete</button>
+                              <button onClick={() => setDeleteId(null)} style={{
+                                padding: '0.6rem 1.5rem', borderRadius: '0.75rem',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                background: 'rgba(255,255,255,0.06)',
+                                color: 'var(--text-secondary)', fontWeight: 600, cursor: 'pointer',
+                              }}>Cancel</button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          )}
+          ))}
         </div>
-      </div>
+      )}
+
+      {/* Edit Modal */}
+      {editLog && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 100,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(12px)',
+        }}>
+          <div style={{
+            background: 'var(--bg-elevated)',
+            border: '1px solid rgba(99,102,241,0.25)',
+            borderRadius: '1.5rem',
+            padding: '2rem',
+            maxWidth: '420px', width: '90vw',
+          }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '1.5rem' }}>
+              ✏️ Edit Food Log
+            </h2>
+            <form onSubmit={handleEditSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {(['food', 'quantity'] as const).map(field => (
+                <div key={field}>
+                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>
+                    {field.toUpperCase()}
+                  </label>
+                  <input
+                    type="text" name={field}
+                    value={editForm[field]}
+                    onChange={handleEditChange}
+                    required className="glass-input"
+                  />
+                </div>
+              ))}
+              <div>
+                <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>
+                  MEAL
+                </label>
+                <select
+                  name="meal" value={editForm.meal} onChange={handleEditChange} required
+                  className="glass-input"
+                >
+                  <option value="">Select meal</option>
+                  {['breakfast','lunch','dinner','snack'].map(m => (
+                    <option key={m} value={m}>{m.charAt(0).toUpperCase() + m.slice(1)}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>
+                  DATE
+                </label>
+                <input
+                  type="date" name="date"
+                  value={editForm.date}
+                  onChange={handleEditChange}
+                  required className="glass-input"
+                  style={{ colorScheme: 'dark' } as React.CSSProperties}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+                <button type="submit" style={{
+                  flex: 1, padding: '0.75rem', borderRadius: '0.75rem',
+                  border: 'none', background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+                  color: 'white', fontWeight: 700, cursor: 'pointer',
+                }}>Save Changes</button>
+                <button type="button" onClick={() => setEditLog(null)} style={{
+                  flex: 1, padding: '0.75rem', borderRadius: '0.75rem',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  background: 'rgba(255,255,255,0.06)',
+                  color: 'var(--text-secondary)', fontWeight: 600, cursor: 'pointer',
+                }}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

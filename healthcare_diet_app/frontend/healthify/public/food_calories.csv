@@ -15,7 +15,6 @@ Cheddar cheese 1 slice,113
 Chicken breast 3 oz,142
 Chocolate chip cookie,59
 Cola 12 oz,136
-Dal,160
 Egg large scrambled,102
 Garlic Rasam,36
 Granola bar 1.5 oz,193
@@ -234,29 +233,730 @@ Whole wheat pasta 1 cup cooked,174
 Wild rice 1 cup cooked,166
 Yogurt flavored 1 cup,150
 Zucchini noodles 1 cup,20
-Kadala Curry, 225
-Parwal, 24
-Lady fingers, 33
-Bhindi, 33
-Poha, 120
-Ghee Rice, 250
-Kerela, 34
-Sambar, 150
-Puffed Rice, 300
-Chole, 223
-Channa, 300
-Dosa, 168
-Idli, 50
-Moong Dal, 347
-Chhole, 200
-Soya Chunks, 446
-Upma, 209
-Peanut Fried Rice, 400
-Boondi Raitha, 200
-Oats, 389
-Pancake, 227
-Cucumber, 15
-Chicken Burger, 350
-Sabudana, 350
-Veg Pulao, 359
-Curd, 98
+Kadala Curry,225
+Parwal,24
+Lady fingers,33
+Bhindi,33
+Poha,120
+Ghee Rice,250
+Kerela,34
+Sambar,150
+Puffed Rice,300
+Chole,223
+Channa,300
+Dosa,168
+Idli,50
+Moong Dal,347
+Chhole,200
+Soya Chunks,446
+Upma,209
+Peanut Fried Rice,400
+Boondi Raitha,200
+Oats,389
+Pancake,227
+Cucumber,15
+Chicken Burger,350
+Sabudana,350
+Veg Pulao,359
+Curd,98
+Butter Chicken,430
+Chicken Tikka Masala,380
+Chicken Curry,290
+Chicken Korma,370
+Chicken Chettinad,340
+Kadai Chicken,330
+Chicken Handi,350
+Chicken Do Pyaza,330
+Chicken Saagwala,290
+Chicken Palak,290
+Chicken Mughlai,410
+Chicken Lababdar,380
+Chicken Kolhapuri,360
+Chicken Sukka,320
+Chicken Ghee Roast,390
+Chicken Stew,280
+Chicken Rezala,340
+Chicken Bharta,370
+Chicken Cafreal,330
+Chicken Xacuti,360
+Chicken Vindaloo,350
+Andhra Chicken Curry,320
+Gongura Chicken,310
+Natu Kodi Pulusu,340
+Chicken Dak Bungalow,360
+Chicken Chaap,410
+Tandoori Chicken,220
+Chicken Tikka,260
+Chicken Malai Tikka,320
+Chicken Hariyali Tikka,250
+Chicken Reshmi Kebab,270
+Chicken Seekh Kebab,240
+Chicken Tangdi Kebab,260
+Chicken 65,280
+Chilli Chicken,310
+Chicken Manchurian,300
+Dragon Chicken,330
+Chicken Lollipop,290
+Chicken Kathi Roll,420
+Chicken Frankie,390
+Chicken Shawarma Roll,390
+Mutton Rogan Josh,410
+Mutton Curry,390
+Mutton Korma,440
+Mutton Sukka,380
+Mutton Rara,430
+Mutton Do Pyaza,410
+Mutton Handi,420
+Mutton Kolhapuri,430
+Mutton Chettinad,410
+Mutton Ghee Roast,460
+Laal Maas,420
+Safed Maas,450
+Jungli Maas,390
+Keema Matar,360
+Keema Curry,370
+Keema Pav,480
+Keema Ghotala,490
+Nalli Nihari,460
+Mutton Nihari,460
+Mutton Paya Soup,180
+Mutton Paya Curry,310
+Mutton Seekh Kebab,310
+Galouti Kebab,290
+Shami Kebab,260
+Boti Kebab,280
+Kakori Kebab,300
+Gongura Mutton,420
+Kosha Mangsho,430
+Mutton Rezala,420
+Mutton Chaap,460
+Mutton Kathi Roll,460
+Haleem,420
+Hyderabadi Haleem,440
+Fish Curry Home Style,210
+Fish Curry,210
+Goan Fish Curry,280
+Macher Jhol,220
+Fish Fry,190
+Amritsari Fish Fry,230
+Fish Tikka,210
+Meen Moilee,270
+Karimeen Pollichathu,260
+Andhra Fish Curry,240
+Chepala Pulusu,240
+Shorshe Ilish,340
+Ilish Bhapa,320
+Chingri Malai Curry,350
+Daab Chingri,360
+Prawn Curry,240
+Prawn Masala,260
+Prawn Koliwada,270
+Prawn Balchao,280
+Prawn Ghee Roast,340
+Prawn Fry,230
+Crab Curry,230
+Crab Masala,250
+Squid Sukka,240
+Egg Curry,260
+Egg Bhurji,210
+Egg Masala,240
+Indian Masala Omelette,190
+Bread Omelette,310
+Boiled Egg,78
+Boiled Egg Fry,120
+Egg Korma,270
+Egg Roast Kerala Style,240
+Egg Kathi Roll,340
+Paneer Butter Masala,380
+Palak Paneer,260
+Kadai Paneer,320
+Shahi Paneer,350
+Matar Paneer,280
+Paneer Tikka Masala,340
+Paneer Tikka,270
+Paneer Bhurji,290
+Paneer Lababdar,360
+Paneer Do Pyaza,330
+Paneer Pasanda,390
+Paneer Makhani,370
+Paneer Korma,360
+Paneer Kolhapuri,340
+Paneer Handi,340
+Paneer Kofta,370
+Paneer Kali Mirch,330
+Paneer Jalfrezi,290
+Chilli Paneer,320
+Chilli Paneer Dry,310
+Chilli Paneer Gravy,330
+Tawa Paneer,310
+Malai Kofta,410
+Navratan Korma,320
+Aloo Gobi,170
+Aloo Gobi Matar,180
+Aloo Matar,180
+Aloo Jeera,160
+Jeera Aloo,160
+Aloo Shimla Mirch,150
+Aloo Capsicum,150
+Aloo Methi,160
+Aloo Baingan,140
+Dum Aloo,260
+Kashmiri Dum Aloo,280
+Banarasi Dum Aloo,270
+Baingan Bharta,140
+Bharli Vangi,210
+Gutti Vankaya,220
+Ennai Kathirikai,210
+Bhindi Masala,150
+Bhindi Fry,170
+Kurkuri Bhindi,190
+Dahi Bhindi,180
+Lauki Kofta,230
+Lauki Ki Sabzi,90
+Ghiya Ki Sabzi,90
+Tinda Masala,85
+Torai Ki Sabzi,80
+Turai Masala,85
+Karela Fry,140
+Karela Masala,110
+Bharwan Karela,140
+Bharwan Shimla Mirch,160
+Bharwan Baingan,190
+Bharwan Bhindi,160
+Gobi Matar,140
+Gobi Masala,150
+Gobi Manchurian,280
+Gobi Manchurian Dry,270
+Cabbage Matar,120
+Patta Gobi Sabzi,110
+Mixed Veg Curry,180
+Veg Korma,240
+Veg Kolhapuri,260
+Veg Jalfrezi,200
+Veg Handi,220
+Veg Makhanwala,280
+Veg Kadai,210
+Veg Manchurian,270
+Sarson Ka Saag,190
+Methi Matar Malai,290
+Mushroom Masala,180
+Mushroom Matar,160
+Kadai Mushroom,190
+Mushroom Do Pyaza,200
+Corn Palak,190
+Palak Corn,190
+Palak Kofta,240
+Soya Chaap Curry,290
+Soya Chaap Masala,290
+Tandoori Soya Chaap,260
+Malai Soya Chaap,340
+Afghani Soya Chaap,330
+Soya Chunks Curry,220
+Kathal Ki Sabzi,210
+Raw Jackfruit Curry,210
+Arbi Ki Sabzi,180
+Arbi Fry,200
+Suran Ki Sabzi,190
+Elephant Yam Curry,190
+Sem Aloo,140
+Gawar Phali Sabzi,110
+Cluster Beans Curry,110
+Avial,180
+Kootu,160
+Poriyal,120
+Beetroot Poriyal,110
+Carrot Beans Poriyal,100
+Cabbage Poriyal,95
+Vazhaikkai Poriyal,130
+Raw Banana Fry,150
+Mor Kuzhambu,140
+Vatha Kuzhambu,160
+Puli Kuzhambu,150
+Kerala Veg Stew,210
+Shukto,130
+Aloo Posto,220
+Dhokar Dalna,240
+Potol Dorma,230
+Litti Chokha,440
+Baingan Chokha,110
+Aloo Chokha,140
+Tomato Chokha,80
+Sattu Paratha,240
+Undhiyu,310
+Sev Tamatar,220
+Sev Tameta Nu Shaak,220
+Pithla,190
+Pithla Bhakri,320
+Gatte Ki Sabzi,240
+Govind Gatta,280
+Ker Sangri,190
+Papad Ki Sabzi,170
+Methi Dana Sabzi,150
+Dal Tadka,180
+Dal Fry,200
+Dal Makhani,320
+Yellow Dal,150
+Chana Dal Cooked,210
+Toor Dal Cooked,170
+Masoor Dal Cooked,170
+Urad Dal Cooked,180
+Panchmel Dal,210
+Dal Panchratna,210
+Rajma Masala,240
+Rajma Curry,240
+Rajma Chawal,380
+Chana Masala,240
+Pindi Chole,230
+Amritsari Chole,250
+Chole Bhature,650
+Chole Kulche,480
+Kadhi Pakora,260
+Gujarati Kadhi,140
+Punjabi Kadhi,220
+Sindhi Kadhi,160
+Rajasthani Kadhi,190
+Maharashtrian Kadhi,150
+Sprouted Moong Dal Curry,170
+Lobia Masala,190
+Black Eyed Peas Curry,190
+Kala Chana Masala,210
+Kala Chana Curry,210
+Kulith Dal,180
+Horsegram Dal,180
+Dal Baati,450
+Dal Baati Churma,580
+Dal Dhokli,280
+Cholar Dal,230
+Tomato Pappu,170
+Palak Pappu,160
+Dosakaya Pappu,150
+Dalma,180
+Roti with Ghee,115
+Phulka,70
+Phulka with Ghee,95
+Tandoori Roti,120
+Butter Tandoori Roti,150
+Plain Naan,260
+Butter Naan,310
+Garlic Naan,320
+Butter Garlic Naan,340
+Cheese Naan,380
+Cheese Garlic Naan,410
+Keema Naan,420
+Kashmiri Naan,340
+Rumali Roti,170
+Missi Roti,140
+Bajra Roti,115
+Jowar Roti,110
+Makki Ki Roti,145
+Akki Roti,160
+Ragi Roti,120
+Ragi Mudde,180
+Aloo Paratha,290
+Paneer Paratha,330
+Gobi Paratha,240
+Methi Paratha,210
+Mooli Paratha,220
+Pyaz Paratha,230
+Onion Paratha,230
+Egg Paratha,320
+Keema Paratha,380
+Lachha Paratha,290
+Mughlai Paratha,450
+Ajwain Paratha,210
+Plain Paratha with Ghee,220
+Bhatura,290
+Plain Kulcha,220
+Amritsari Kulcha,310
+Onion Kulcha,240
+Paneer Kulcha,290
+Aloo Kulcha,270
+Thepla,110
+Methi Thepla,115
+Bhakri,130
+Jowar Bhakri,125
+Bajra Bhakri,135
+Jolada Roti,120
+Appam,120
+Egg Appam,180
+Palappam,125
+Idiyappam,140
+Puttu,240
+Malabar Parotta,320
+Kerala Parotta,320
+Kothu Parotta Veg,360
+Kothu Parotta Egg,410
+Kothu Parotta Chicken,450
+Kothu Parotta Mutton,490
+Puran Poli,240
+Luchi,140
+Kachori Puri,180
+Radhaballabhi,210
+Chicken Biryani,450
+Mutton Biryani,550
+Veg Biryani,350
+Vegetable Biryani,350
+Hyderabadi Chicken Biryani,490
+Hyderabadi Mutton Biryani,580
+Hyderabadi Veg Biryani,370
+Kolkata Chicken Biryani,470
+Kolkata Mutton Biryani,560
+Lucknowi Chicken Biryani,460
+Lucknowi Mutton Biryani,540
+Egg Biryani,380
+Fish Biryani,420
+Prawn Biryani,410
+Dum Biryani,460
+Sindhi Biryani,490
+Ambur Chicken Biryani,460
+Malabar Chicken Biryani,480
+Jeera Rice,210
+Basmati Rice Cooked,200
+Peas Pulao,260
+Matar Pulao,260
+Kashmiri Pulao,330
+Paneer Pulao,340
+Tawa Pulao,310
+Khichdi,220
+Dal Khichdi,230
+Moong Dal Khichdi,215
+Sabudana Khichdi,350
+Curd Rice,210
+Lemon Rice,250
+Tamarind Rice,290
+Puliyogare,290
+Tomato Rice,240
+Sambar Rice,260
+Bisi Bele Bath,290
+Coconut Rice,310
+Vangi Bath,270
+Brinjal Rice,270
+Ven Pongal,280
+Sweet Pongal,340
+Sakkarai Pongal,340
+Bagara Rice,240
+Fried Rice Indian Style,290
+Plain Dosa,135
+Masala Dosa,280
+Ghee Roast Dosa,290
+Mysore Masala Dosa,320
+Rava Dosa,190
+Rava Masala Dosa,260
+Onion Rava Dosa,230
+Set Dosa,240
+Pesarattu,150
+Pesarattu Upma,280
+Neer Dosa,160
+Paper Masala Dosa,330
+Cheese Dosa,340
+Egg Dosa,260
+Podi Dosa,210
+Kari Dosa,390
+Plain Uttapam,180
+Onion Uttapam,210
+Tomato Onion Uttapam,220
+Mix Veg Uttapam,230
+Cheese Uttapam,280
+Rava Idli,95
+Kanchipuram Idli,110
+Thatte Idli,140
+Podi Idli,180
+Mini Idli Sambar,220
+Medu Vada,150
+Sambar Vada,320
+Dahi Vada,280
+Masala Vada,210
+Maddur Vada,190
+Dal Vada,210
+Kuzhi Paniyaram,180
+Sweet Paniyaram,210
+Rasam,60
+Tomato Rasam,55
+Pepper Rasam,50
+Mysore Rasam,65
+Lemon Rasam,50
+Rava Upma,209
+Semiya Upma,210
+Oats Upma,190
+Bread Upma,230
+Tomato Upma,215
+Kanda Poha,180
+Batata Poha,210
+Indori Poha,200
+Aval Upma,180
+Sevai,190
+Lemon Sevai,210
+Coconut Sevai,240
+Adai,190
+Adai Avial,370
+Kozhukattai,180
+Modak Steamed,130
+Mangalore Buns,190
+Samosa,260
+Cocktail Samosa,160
+Onion Samosa,150
+Keema Samosa,290
+Aloo Tikki,240
+Aloo Tikki Chaat,340
+Pani Puri,180
+Golgappa,180
+Puchka,180
+Sev Puri,260
+Bhel Puri,280
+Sukha Bhel,210
+Dahi Puri,320
+Papdi Chaat,310
+Dahi Papdi Chaat,330
+Dahi Bhalla,290
+Dahi Vada Chaat,290
+Raj Kachori,450
+Khasta Kachori,280
+Pyaz Kachori,310
+Pyaaz Ki Kachori,310
+Mawa Kachori,360
+Matar Kachori,270
+Pav Bhaji,480
+Cheese Pav Bhaji,560
+Pav,120
+Butter Pav,180
+Vada Pav,290
+Cheese Vada Pav,360
+Misal Pav,420
+Usal Pav,380
+Dabeli,270
+Kutchi Dabeli,270
+Ragda Pattice,350
+Ragda Puri,290
+Bread Pakora,260
+Paneer Pakora,240
+Onion Pakora,270
+Kanda Bhaji,270
+Vegetable Pakora,250
+Gobi Pakora,220
+Aloo Pakora,230
+Palak Pakora,210
+Mirchi Bajji,220
+Mirchi Vada,240
+Sabudana Vada,290
+Kothimbir Vadi,170
+Alu Vadi,160
+Patra,160
+Dhokla,140
+Khaman Dhokla,150
+White Dhokla,135
+Rava Dhokla,145
+Khandvi,120
+Handvo,180
+Muthia,140
+Murukku,150
+Chakli,150
+Sev,210
+Aloo Bhujia,240
+Namak Para,220
+Shakkarpara,260
+Fafda,210
+Ganthiya,230
+Khakhra Plain,75
+Khakhra Methi,80
+Khakhra Jeera,78
+Banana Chips,160
+Kerala Banana Chips,160
+Tapioca Chips,170
+Roasted Chana,180
+Roasted Makhana,110
+Moong Dal Chilla,130
+Besan Chilla,140
+Oats Chilla,130
+Paneer Kathi Roll,360
+Veg Kathi Roll,290
+Paneer Frankie,350
+Veg Frankie,280
+Veg Momos Steamed,210
+Chicken Momos Steamed,260
+Veg Momos Fried,340
+Chicken Momos Fried,390
+Tandoori Momos,290
+Veg Spring Roll,260
+Chicken Spring Roll,310
+Veg Cutlet,190
+Mutton Cutlet,260
+Chicken Cutlet,230
+Fish Cutlet,210
+Gulab Jamun,150
+Kala Jamun,180
+Dry Gulab Jamun,140
+Rasgulla,125
+Rasmalai,180
+Angoori Rasmalai,170
+Jalebi,220
+Rabri Jalebi,380
+Imarti,200
+Kaju Katli,160
+Kaju Roll,180
+Besan Ladoo,180
+Motichoor Ladoo,190
+Boondi Ladoo,185
+Atta Ladoo,190
+Rava Ladoo,150
+Gond Ladoo,220
+Til Ladoo,130
+Besan Barfi,170
+Kaju Barfi,160
+Pista Barfi,165
+Coconut Barfi,180
+Gajar Ka Halwa,260
+Moong Dal Halwa,340
+Sooji Halwa,270
+Sheera,270
+Badam Halwa,280
+Atta Halwa,290
+Kada Prasad,320
+Karachi Halwa,230
+Mysore Pak,220
+Ghee Mysore Pak,260
+Rice Kheer,240
+Kheer,240
+Phirni,220
+Semiya Payasam,230
+Vermicelli Kheer,230
+Palada Payasam,260
+Parippu Payasam,270
+Ada Pradhaman,280
+Shrikhand,240
+Amrakhand,260
+Mango Shrikhand,260
+Ukadiche Modak,130
+Modak Fried,190
+Peda,110
+Mathura Peda,120
+Dharwad Peda,130
+Sandesh,95
+Nolen Gur Sandesh,110
+Cham Cham,175
+Kalakand,140
+Milk Cake,170
+Alwar Ka Mawa,180
+Malpua,220
+Malpua with Rabri,360
+Rabri,260
+Matka Kulfi,220
+Kulfi,180
+Malai Kulfi,210
+Pista Kulfi,200
+Mango Kulfi,190
+Falooda,360
+Kulfi Falooda,420
+Ghevar,380
+Rabri Ghevar,460
+Balushahi,230
+Badusha,230
+Gujiya,240
+Mawa Gujiya,260
+Basundi,280
+Mysore Bonda,220
+Soan Papdi,190
+Mishti Doi,180
+Chhena Poda,190
+Chhena Gaja,210
+Rasabali,220
+Khaja,210
+Thekua,240
+Bebinca,290
+Masala Chai,90
+Chai,90
+Ginger Tea Adrak Chai,85
+Cardamom Tea Elaichi Chai,85
+Kashmiri Chai Pink Tea,120
+Kashmiri Kahwa,45
+Sulaimani Tea,15
+Cutting Chai,60
+Filter Coffee,110
+South Indian Filter Coffee,110
+Filter Coffee without Sugar,65
+Sweet Lassi,220
+Mango Lassi,260
+Salted Lassi,120
+Lassi Plain,180
+Buttermilk,45
+Chaas,45
+Masala Chaas,50
+Neer Mor,40
+Badam Milk,210
+Thandai,240
+Bhang Thandai,250
+Jaljeera,35
+Nimbu Pani Sweet,80
+Nimbu Pani Unsweetened,15
+Shikanji,85
+Sugarcane Juice,180
+Aam Panna,120
+Kokum Sharbat,90
+Rooh Afza Sharbat,140
+Tender Coconut Water,45
+Sattu Drink Sweet,190
+Sattu Drink Salted,140
+Sol Kadhi,85
+Haldi Doodh,130
+Turmeric Latte,130
+Kesar Milk,190
+Coconut Chutney,50
+White Coconut Chutney,50
+Red Coconut Chutney,55
+Mint Chutney,20
+Pudina Chutney,20
+Coriander Chutney,20
+Green Chutney,20
+Tamarind Chutney,65
+Saunth Chutney,65
+Tomato Chutney,35
+Peanut Chutney,80
+Groundnut Chutney,80
+Onion Tomato Chutney,40
+Garlic Chutney,30
+Dry Garlic Chutney,45
+Gongura Pachadi,45
+Tomato Pachadi,40
+Idli Podi with Oil,70
+Gunpowder with Ghee,85
+Cucumber Raita,60
+Kakdi Raita,60
+Onion Raita,65
+Mixed Veg Raita,60
+Pineapple Raita,95
+Burani Raita,80
+Bathua Raita,55
+Mango Pickle,35
+Aam Ka Achar,35
+Lime Pickle,25
+Nimbu Ka Achar,25
+Mixed Pickle,30
+Green Chilli Pickle,25
+Mirchi Ka Achar,25
+Roasted Papad,45
+Fried Papad,110
+Masala Papad,85
+Khichiya Papad,60
+Ghee,112
+Desi Ghee 1 tbsp,112
+White Butter Makhan,90
+Paneer 100g,265
+Paneer 50g,135
+Paneer Cubes Raw,265
+Besan Gram Flour,89
+Atta Whole Wheat Flour,114
+Maida Refined Flour,124
+Sooji Rava,150
+Ragi Flour,110
+Jowar Flour,100
+Bajra Flour,105
+Makhana Foxnuts,105
+Jaggery Gur,76
+Mustard Oil 1 tbsp,120
+Coconut Oil 1 tbsp,120
+Boiled Chana,210
+Sprouted Moong,105
+Raw Poha,180
+Chana Jor Garam,190
+Khoya Mawa 50g,190
+Paneer Raw 1 cup,320
+Tofu Raw 100g,83
