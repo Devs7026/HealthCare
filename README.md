@@ -1,5 +1,8 @@
 # HealthCare Project
 
+<img width="1376" height="768" alt="Healthify" src="https://github.com/user-attachments/assets/595c241f-63b5-476a-a4f3-df2a76b6d788" />
+
+
 A comprehensive health and wellness platform featuring an AI Medical Chatbot and a Diet & Calorie Tracking App. This project is organized into two main components:
 
 - **AI_Medical_Chatbot**: An intelligent chatbot for answering medical queries and providing health information.
