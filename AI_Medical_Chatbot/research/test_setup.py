@@ -68,13 +68,13 @@ def test_environment():
     
     load_dotenv()
     
-    gemini_key = os.environ.get('GEMINI_API_KEY')
+    groq_key = os.environ.get('GROQ_API_KEY') or os.environ.get('GEMINI_API_KEY')
     pinecone_key = os.environ.get('PINECONE_API_KEY')
     
-    if gemini_key:
-        print("✅ GEMINI_API_KEY found")
+    if groq_key:
+        print("✅ GROQ_API_KEY found")
     else:
-        print("❌ GEMINI_API_KEY not found")
+        print("❌ GROQ_API_KEY not found")
         return False
     
     if pinecone_key:
@@ -124,7 +124,7 @@ def test_gemini_connection():
         from dotenv import load_dotenv
         
         load_dotenv()
-        gemini_key = os.environ.get('GEMINI_API_KEY')
+        groq_key = os.environ.get('GROQ_API_KEY') or os.environ.get('GEMINI_API_KEY')
         
         if not gemini_key:
             print("❌ GEMINI_API_KEY not found")

@@ -8,8 +8,12 @@ import os
 from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
+try:
+    from langchain_huggingface import HuggingFaceEmbeddings
+except ImportError:
+    from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_pinecone import PineconeVectorStore
+from langchain_groq import ChatGroq
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
@@ -23,15 +27,15 @@ def load_environment():
     load_dotenv()
     
     pinecone_key = os.environ.get('PINECONE_API_KEY')
-    gemini_key = os.environ.get('GEMINI_API_KEY')
+    groq_key = os.environ.get('GROQ_API_KEY') or os.environ.get('GEMINI_API_KEY')
     
     if not pinecone_key:
         raise ValueError("PINECONE_API_KEY not found in environment variables")
-    if not gemini_key:
-        raise ValueError("GEMINI_API_KEY not found in environment variables")
+    if not groq_key:
+        raise ValueError("GROQ_API_KEY (or GEMINI_API_KEY) not found in environment variables")
     
     print("✅ Environment variables loaded successfully")
-    return pinecone_key, gemini_key
+    return pinecone_key, groq_key
 
 def load_pdf_data(data_path='Data/'):
     """Load PDF documents from the data directory"""
@@ -106,38 +110,70 @@ def setup_vectorstore(text_chunks, embeddings, index_name):
     
     return docsearch
 
-def setup_gemini_llm(gemini_key):
-    """Setup Gemini LLM"""
-    print("🤖 Setting up Gemini LLM...")
+def setup_groq_llm(groq_key):
+    """Setup Groq LLM (with fallback to Gemini if Gemini key provided)"""
+    print("🤖 Setting up LLM...")
     
-    # Configure Gemini API
-    genai.configure(api_key=gemini_key)
-    
-
-    llm = None
-    possible_models = [
-        "gemini-1.5-flash-8b",
-        "gemini-1.5-flash",
-        "gemini-1.5-pro"
-    ]
-    last_error = None
-    for model_name in possible_models:
+    if groq_key.startswith("gsk_") or os.environ.get('GROQ_API_KEY'):
+        preferred_models = [
+            "qwen/qwen3.8-27b",
+            "openai/gpt-oss-120b",
+            "openai/gpt-oss-20b",
+            "llama-3.3-70b-versatile",
+            "llama-3.1-8b-instant"
+        ]
+        selected_model = None
         try:
-            llm = ChatGoogleGenerativeAI(
-                model=model_name,
-                temperature=0.4,
-                max_output_tokens=500,
-                google_api_key=gemini_key
-            )
-            break
-        except Exception as e:
-            last_error = e
-            continue
-    if llm is None:
+            from groq import Groq
+            client = Groq(api_key=groq_key)
+            available_ids = {m.id for m in client.models.list().data if getattr(m, 'active', True)}
+            for pm in preferred_models:
+                if pm in available_ids:
+                    selected_model = pm
+                    break
+            if not selected_model:
+                for m in available_ids:
+                    if not any(skip in m for skip in ['whisper', 'guard', 'orpheus', 'safeguard']):
+                        selected_model = m
+                        break
+        except Exception:
+            pass
+
+        if not selected_model:
+            selected_model = "qwen/qwen3.8-27b"
+
+        llm = ChatGroq(
+            model=selected_model,
+            temperature=0.4,
+            max_tokens=500,
+            api_key=groq_key
+        )
+        print(f"✅ Groq LLM setup complete ({selected_model})")
+        return llm
+    else:
+        genai.configure(api_key=groq_key)
+        possible_models = [
+            "gemini-1.5-flash-8b",
+            "gemini-1.5-flash",
+            "gemini-1.5-pro"
+        ]
+        last_error = None
+        for model_name in possible_models:
+            try:
+                llm = ChatGoogleGenerativeAI(
+                    model=model_name,
+                    temperature=0.4,
+                    max_output_tokens=500,
+                    google_api_key=groq_key
+                )
+                print(f"✅ Gemini LLM setup complete ({model_name})")
+                return llm
+            except Exception as e:
+                last_error = e
+                continue
         raise RuntimeError(f"Failed to initialize Gemini LLM with any supported model: {last_error}")
-    
-    print("✅ Gemini LLM setup complete")
-    return llm
+
+setup_gemini_llm = setup_groq_llm
 
 def create_rag_chain(retriever, llm):
     """Create RAG chain"""
@@ -244,7 +280,7 @@ def main():
         print("1. Make sure you have the required packages installed:")
         print("   pip install google-generativeai langchain-google-genai")
         print("2. Check your .env file has the correct API keys:")
-        print("   GEMINI_API_KEY=your_gemini_api_key_here")
+        print("   GROQ_API_KEY=your_groq_api_key_here")
         print("   PINECONE_API_KEY=your_pinecone_api_key_here")
         print("3. Make sure you have PDF files in the Data/ directory")
 

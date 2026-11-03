@@ -15,6 +15,102 @@ const SUGGESTIONS = [
   "What foods boost immunity?",
 ];
 
+const renderFormattedContent = (text: string, isUser: boolean) => {
+  if (isUser) {
+    return (
+      <p style={{ fontSize: '0.875rem', lineHeight: 1.6, color: '#ffffff', margin: 0, whiteSpace: 'pre-wrap' }}>
+        {text}
+      </p>
+    );
+  }
+
+  const lines = text.split('\n');
+  const elements: React.ReactNode[] = [];
+  let currentList: React.ReactNode[] = [];
+
+  const flushList = () => {
+    if (currentList.length > 0) {
+      elements.push(
+        <ul
+          key={`ul-${elements.length}`}
+          style={{
+            margin: '0.4rem 0',
+            paddingLeft: '1.25rem',
+            listStyleType: 'disc',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.35rem',
+          }}
+        >
+          {currentList}
+        </ul>
+      );
+      currentList = [];
+    }
+  };
+
+  const parseInline = (str: string): React.ReactNode[] => {
+    const parts: React.ReactNode[] = [];
+    const regex = /(\*\*.*?\*\*|\*.*?\*)/g;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(str)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(str.substring(lastIndex, match.index));
+      }
+      const token = match[0];
+      if (token.startsWith('**') && token.endsWith('**')) {
+        parts.push(
+          <strong key={match.index} style={{ fontWeight: 700, color: '#e0e7ff' }}>
+            {token.slice(2, -2)}
+          </strong>
+        );
+      } else if (token.startsWith('*') && token.endsWith('*')) {
+        parts.push(
+          <em key={match.index} style={{ fontStyle: 'italic', color: '#c7d2fe' }}>
+            {token.slice(1, -1)}
+          </em>
+        );
+      }
+      lastIndex = match.index + token.length;
+    }
+
+    if (lastIndex < str.length) {
+      parts.push(str.substring(lastIndex));
+    }
+    return parts;
+  };
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      flushList();
+      elements.push(<div key={`gap-${index}`} style={{ height: '0.35rem' }} />);
+      return;
+    }
+
+    const bulletMatch = trimmed.match(/^[*•-]\s+(.*)$/);
+    if (bulletMatch) {
+      currentList.push(
+        <li key={`li-${index}`} style={{ fontSize: '0.875rem', lineHeight: 1.55, color: 'var(--text-primary)' }}>
+          {parseInline(bulletMatch[1])}
+        </li>
+      );
+    } else {
+      flushList();
+      elements.push(
+        <p key={`p-${index}`} style={{ fontSize: '0.875rem', lineHeight: 1.6, color: 'var(--text-primary)', margin: '0.3rem 0' }}>
+          {parseInline(trimmed)}
+        </p>
+      );
+    }
+  });
+
+  flushList();
+  return <div style={{ wordBreak: 'break-word' }}>{elements}</div>;
+};
+
 const Chatbot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -241,9 +337,7 @@ const Chatbot: React.FC = () => {
                   wordBreak: 'break-word',
                 }}
               >
-                <p style={{ fontSize: '0.875rem', lineHeight: 1.6, color: 'var(--text-primary)', margin: 0 }}>
-                  {message.text}
-                </p>
+                {renderFormattedContent(message.text, message.sender === 'user')}
                 <p
                   style={{
                     fontSize: '0.68rem',

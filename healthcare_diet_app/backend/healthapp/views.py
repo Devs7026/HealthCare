@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+from .medical_chatbot_api import ask_medical_question, get_chatbot_status
+
 class FoodLogListCreateView(generics.ListCreateAPIView):
     queryset = FoodLog.objects.all().order_by('-date', '-created_at')
     serializer_class = FoodLogSerializer
@@ -51,14 +53,7 @@ def chatbot_query(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Import the medical chatbot API
-        try:
-            from .medical_chatbot_api import ask_medical_question
-        except ImportError as e:
-            return Response(
-                {'error': f'Medical chatbot module not available: {str(e)}'}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+        # Chatbot is pre-warmed on server boot
         
         # Get the answer
         answer = ask_medical_question(user_question)
@@ -81,7 +76,6 @@ def chatbot_status(request):
     Get the status of the chatbot system
     """
     try:
-        from .medical_chatbot_api import get_chatbot_status
         status = get_chatbot_status()
         return Response(status)
     except Exception as e:

@@ -7,6 +7,9 @@ pinecone[grpc]
 langchain-pinecone
 langchain_community
 langchain_experimental
+langchain-groq
+groq
+langchain-huggingface
 google-generativeai
 langchain-google-genai
 -e .
